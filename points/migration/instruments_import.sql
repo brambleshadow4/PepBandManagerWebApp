@@ -1,0 +1,9 @@
+INSERT INTO Instruments (id, name) VALUES (0, 'Flute');
+INSERT INTO Instruments (id, name) VALUES (1, 'Clarinet');
+INSERT INTO Instruments (id, name) VALUES (2, 'Sax');
+INSERT INTO Instruments (id, name) VALUES (3, 'Trumpet');
+INSERT INTO Instruments (id, name) VALUES (4, 'Horn');
+INSERT INTO Instruments (id, name) VALUES (5, 'Bone');
+INSERT INTO Instruments (id, name) VALUES (6, 'Tuba');
+INSERT INTO Instruments (id, name) VALUES (7, 'Percussion');
+INSERT INTO Instruments (id, name) VALUES (8, 'Other');

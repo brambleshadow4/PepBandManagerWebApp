@@ -1,0 +1,17 @@
+INSERT INTO Event_Types (id, name) VALUES (0, 'Rehearsal');
+INSERT INTO Event_Types (id, name) VALUES (1, 'Election');
+INSERT INTO Event_Types (id, name) VALUES (2, 'Point Adjustment / Suck Point');
+INSERT INTO Event_Types (id, name) VALUES (3, 'Field Hockey');
+INSERT INTO Event_Types (id, name) VALUES (4, 'Football');
+INSERT INTO Event_Types (id, name) VALUES (5, 'Men''s Basketball');
+INSERT INTO Event_Types (id, name) VALUES (6, 'Men''s Hockey');
+INSERT INTO Event_Types (id, name) VALUES (7, 'Men''s Lacrosse');
+INSERT INTO Event_Types (id, name) VALUES (8, 'Men''s Soccer');
+INSERT INTO Event_Types (id, name) VALUES (9, 'Miscellaneous');
+INSERT INTO Event_Types (id, name) VALUES (10, 'Sprint Football');
+INSERT INTO Event_Types (id, name) VALUES (11, 'Volleyball');
+INSERT INTO Event_Types (id, name) VALUES (12, 'Women''s Basketball');
+INSERT INTO Event_Types (id, name) VALUES (13, 'Women''s Hockey');
+INSERT INTO Event_Types (id, name) VALUES (14, 'Women''s Lacrosse');
+INSERT INTO Event_Types (id, name) VALUES (15, 'Women''s Soccer');
+INSERT INTO Event_Types (id, name) VALUES (16, 'Wrestling');

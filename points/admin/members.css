@@ -1,0 +1,162 @@
+html, 
+body {
+    height: 100%;
+    margin: 0px;
+}
+
+body{
+	
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	padding-left: 5px;
+	padding-right: 5px;
+
+}
+
+form {display: inline;}
+
+.vertical-expander
+{
+	flex-grow: 1;
+	flex-shrink: 1;
+	overflow: hidden;
+	margin-bottom: 5px;
+}
+
+.vertical-expander-auto
+{
+	flex-grow: 1;
+	flex-shrink: 1;
+	overflow: hidden;
+	overflow-y: auto;
+}
+
+
+.nickname
+{
+	max-width: 5em;
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.netid
+{
+	max-width: 6em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+tr,td {
+	border-collapse: collapse;
+}
+
+td{padding-right: 5px;
+	border-collapse: collapse;
+}
+
+#nickname_header
+{
+
+}
+
+#cols
+{
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-around;
+}
+
+#results-container
+{
+	overflow-y: auto;
+}
+
+#results
+{
+	overflow-y: auto;
+}
+
+
+#col1
+{
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	width: 50%;
+	height: 100%;
+}
+
+#col2
+{
+	width: 50%;
+	height: 100%;
+
+	padding-left: 20px;
+
+	visibility: hidden;
+
+	/*text-align: center;*/
+}
+
+
+
+#col2 label
+{
+	display: inline-block;
+	width: 25%;
+}
+
+tr
+{
+	cursor: pointer;
+}
+
+tr:hover{
+	background-color: #FFAAAA;
+}
+
+span[icon]
+{
+	width: 25px;
+	height: 25px;
+	display:inline-block;
+}
+
+span[icon="check"]
+{
+	background-image: url('ios-checkmark-circle-outline.svg');	
+}
+
+span[icon="error"]
+{
+	background-image: url('ios-warning.svg');
+}
+span[icon="none"]
+{
+}
+
+span[icon="loading"]
+{
+	background-image: url('loading.svg');
+	animation-name: rotate;
+	animation-duration: 3s;
+	display:inline-block;
+}
+
+@keyframes rotate
+{
+	0% { transform: rotate(0deg); }
+	25% { transform: rotate(90deg); }
+	50% { transform: rotate(180deg); }
+	75% { transform: rotate(270deg); }
+	100% { transform: rotate(360deg); }
+}
+
+#delete-container
+{
+	margin-top: .5in;
+}
