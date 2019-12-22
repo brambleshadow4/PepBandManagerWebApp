@@ -1,0 +1,198 @@
+body
+{
+	margin: 0px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+
+
+	padding-left: 8px;
+	align-items: stretch;
+
+	display: flex;
+	flex-direction: column;
+
+	overflow: hidden;
+}
+
+#cols
+{
+	display: flex;
+	overflow: hidden;
+}
+
+#col1
+{
+	flex-grow: 0;
+	flex-shrink: 0;
+	display: inline-block;
+	overflow: hidden;
+
+	margin-right: 10px;
+	padding-bottom: 1in;
+}
+
+#col2
+{
+	flex-grow: 1;
+	flex-shrink: 1;
+	overflow-y: auto;
+	
+	padding-bottom: 20px;
+	
+}
+
+#col2 > div { 
+	position: absolute; 
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+
+}
+
+.member, .new-member-span
+{
+	display: block;
+	background-color: white;
+}
+
+#searchbox-container
+{
+	max-width: 2in;
+	margin-top: 10px;
+	position: relative;
+}
+
+#results
+{
+	border: solid 1px gray;
+	padding: 2px;
+	width: 100%;
+
+	display: block;
+	position: absolute;
+	top: 20px;
+	background-color: white;
+
+}
+
+
+#results.hidden
+{
+	border: none;
+	display: none;
+
+}
+
+#searchbox
+{
+	width: 100%;
+	display: block;
+}
+
+#results > .member:hover, #results > .new-member-span:hover
+{
+	background-color: blue;
+	color: white;
+
+
+	width: 2in;
+}
+
+input[type=number]
+{
+	width: .5in;
+}
+
+.no-wrap
+{
+	 white-space: nowrap;
+}
+
+input.points 
+{
+	width: .75in;
+}
+
+#event-info
+{
+	margin-bottom: .25in;
+}
+
+.remove-button
+{
+	cursor: pointer;
+}
+
+h1{
+	margin-top: 8px;
+}
+
+h2{margin-top: 0px;
+}
+
+h2 span {vertical-align: middle;}
+
+.member .mini {
+	font-size: 8pt;
+	margin-left: 10px;
+}
+
+
+
+.success-check::before
+{
+	animation-name: success-check;
+	color: white;
+ 	animation-duration: 1s;
+	content: "Updated ✔";
+	
+	width: 1in;
+	height: 1in;
+}
+
+
+span[icon]
+{
+	width: 25px;
+	height: 25px;
+	display:inline-block;
+}
+
+span[icon="check"]
+{
+	background-image: url('ios-checkmark-circle-outline.svg');	
+}
+
+span[icon="error"]
+{
+	background-image: url('ios-warning.svg');
+}
+span[icon="none"]
+{
+}
+
+span[icon="loading"]
+{
+	background-image: url('loading.svg');
+	animation-name: rotate;
+	animation-duration: 3s;
+	display:inline-block;	
+}
+
+@keyframes rotate
+{
+	0% { transform: rotate(0deg); }
+	25% { transform: rotate(90deg); }
+	50% { transform: rotate(180deg); }
+	75% { transform: rotate(270deg); }
+	100% { transform: rotate(360deg); }
+}
+
+#event-info label {
+	width: 1in;
+	display: inline-block;
+}
