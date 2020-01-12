@@ -5,17 +5,23 @@ function loadJSON(url, handler, failhandler)
 	request.onreadystatechange = function(e)
 	{
 	
-		if (this.readyState == 4 && this.status == 200)
+		if (this.readyState == 4)
 		{
-			var response = JSON.parse(this.responseText);
-			if(response.status == 200)
-				handler(response.data);
+			if(this.status == 200)
+			{
+				var response = JSON.parse(this.responseText);
+				handler(response);
+			}
 			else
 			{
 				if(failhandler)
-					failhandler(response);
+				{
+					failhandler();
+				}
 				else
-					throw new Error(response.status + ": " + response.data);
+				{
+					alert("Something went wrong with loading " + url);
+				}
 			}
 		}
 	}
