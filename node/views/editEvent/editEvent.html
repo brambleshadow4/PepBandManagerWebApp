@@ -8,6 +8,10 @@
 		<script src="../assets/enumHelper.js"></script>
 		<link type="text/css" href="editEvent/editEvent.css" rel="stylesheet" />
 
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+		<meta http-equiv="Pragma" content="no-cache"/>
+		<meta http-equiv="Expires" content="0"/>
+
 	</head>
 	<body class="expander">
 		
@@ -28,8 +32,8 @@
 						<label>Type</label> <span id='event_type_container'></span>
 					</div>
 					<div><label>Points</label> <input id='default_points' oninput="updateEvent()" type="number"/> </div>
-					<div><label>Date</label> <input maxlength="255" onchange="updateEvent()" id='date' type="date" /> </div>
-					<input type='hidden' id='token' value='$token'/>
+					<div><label>Date</label> <input maxlength="255" onchange="updateDate(this)" id='date' type="date" /> </div>
+					<input type='hidden' id='token' value='{{crsf}}'/>
 					
 					<div>
 						<label for='description'>Description</label>

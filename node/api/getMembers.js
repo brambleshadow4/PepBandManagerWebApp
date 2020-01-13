@@ -23,8 +23,6 @@ exports.run = function(req, res)
 		params = [Number(req.query.season), Number(req.query.season)-1];
 	}
 
-	
-
 	db.all(sql, params, (err, rows) => 
 	{
 		if (err) 
@@ -35,7 +33,7 @@ exports.run = function(req, res)
 		});
 
 		res.setHeader("Content-Type", "text/json");
-		res.writeHead(200);
+		// res.writeHead(200);
 		res.end(JSON.stringify(members, undefined, 4));
 	});
 

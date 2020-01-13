@@ -39,8 +39,12 @@ exports.run = function(req, res)
 			});
 
 		}
-		
-		
+		else
+		{
+			res.setHeader("Content-Type", "text/json");
+			res.writeHead(404);
+			res.end("{}");
+		}
 	});
 
 	// close the database connection

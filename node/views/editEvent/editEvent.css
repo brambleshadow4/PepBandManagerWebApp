@@ -97,8 +97,6 @@ body
 {
 	background-color: blue;
 	color: white;
-
-
 	width: 2in;
 }
 
@@ -142,6 +140,10 @@ h2 span {vertical-align: middle;}
 }
 
 
+.invalid
+{
+	background-color: #FF8888;
+}
 
 .success-check::before
 {
@@ -164,12 +166,12 @@ span[icon]
 
 span[icon="check"]
 {
-	background-image: url('ios-checkmark-circle-outline.svg');	
+	background-image: url('../assets/icons/ios-checkmark-circle-outline.svg');	
 }
 
 span[icon="error"]
 {
-	background-image: url('ios-warning.svg');
+	background-image: url('../assets/icons/ios-warning.svg');
 }
 span[icon="none"]
 {
@@ -177,7 +179,7 @@ span[icon="none"]
 
 span[icon="loading"]
 {
-	background-image: url('loading.svg');
+	background-image: url('../assets/icons/loading.svg');
 	animation-name: rotate;
 	animation-duration: 3s;
 	display:inline-block;	

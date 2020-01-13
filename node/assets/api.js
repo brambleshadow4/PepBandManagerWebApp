@@ -75,7 +75,10 @@ function sendJSON(url, data, handler, failhandler){
 
 		if(this.readyState == 4 && this.status >= 400)
 		{
-			failhandler(this.response);
+			if(failhandler)
+				failhandler(this.response);
+			else
+				console.error("Failed to send data to " + url);
 		}
 	};
 

@@ -4,12 +4,16 @@
 		<script src="assets/api.js"></script>
 		<script src="api/enums.js"></script>
 		<script src="assets/enumHelper.js"></script>
+
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+		<meta http-equiv="Pragma" content="no-cache"/>
+		<meta http-equiv="Expires" content="0"/>
 	</head>
 	<body>
 		<h1>BRPB Online Manager</h1>
 		<h2>Events</h2>
-		<form action="newEvent.php" method="POST">
-			<input name='token' type='hidden' id='token' value='$token'/>
+		<form action="events/new" method="POST">
+			<input name='token' type='hidden' id='token' value='{{crsf}}'/>
 			<input type='hidden' id='default_season' />
 			Season <span id='season-select-container'></span>
 			<input type="submit" value="Create a new event"/>
@@ -61,10 +65,8 @@
 					var event = events[i];
 
 					table.innerHTML += "<tr><td>" + event.name + "</td>" +
-
 						"<td>" + enumLookup.event_types[event.event_type_id] + "</td>" +
 						"<td>" + event.date + "</td>" + 
-						
 						"<td><a href=editEvent?" + event.id + "> Edit </a></td>";
 				}	
 			}

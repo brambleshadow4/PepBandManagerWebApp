@@ -3,10 +3,9 @@ var memberLookup = {}; //data loaded from API for use by member search bar
 var eventAttendees = new Set(); //used by search bar
 
 var season = -1; 
-var enums = {}; //enum data loaded in from API
 var event_id = location.search.substring(1);
 
-var eventOutbox = new Outbox("../api/updateEvent.php", setFeedbackBox, setFeedbackBoxFail);
+var eventOutbox = new Outbox("../api/updateEvent", setFeedbackBox, setFeedbackBoxFail);
 var attendeeOutboxes = {};
 
 
@@ -145,7 +144,7 @@ function addAttendeeToHTML(entry)
 
 		//send data to db
 		if(attendeeOutboxes[data.member_id] == undefined)
-			attendeeOutboxes[data.member_id] = new Outbox("../api/updateEventAttendance.php", setFeedbackBox, setFeedbackBoxFail);
+			attendeeOutboxes[data.member_id] = new Outbox("../api/updateEventAttendance", setFeedbackBox, setFeedbackBoxFail);
 
 		attendeeOutboxes[data.member_id].send(data);
 		setFeedbackBox();
@@ -173,7 +172,7 @@ function addAttendeeToHTML(entry)
 			data.points = Number(points);	
 
 		if(attendeeOutboxes[data.member_id] == undefined)
-			attendeeOutboxes[data.member_id] = new Outbox("../api/updateEventAttendance.php", setFeedbackBox, setFeedbackBoxFail);
+			attendeeOutboxes[data.member_id] = new Outbox("../api/updateEventAttendance", setFeedbackBox, setFeedbackBoxFail);
 
 		attendeeOutboxes[data.member_id].send(data);
 		setFeedbackBox();
@@ -201,7 +200,7 @@ function addAttendeeToHTML(entry)
 			data.member_id = Number(entry.member_id);
 			data.delete = "true";
 
-			//sendJSON("../api/updateEventAttendance.php", JSON.stringify(data), updateSuccess);
+			sendJSON("../api/updateEventAttendance", JSON.stringify(data), setFeedbackBox, setFeedbackBoxFail);
 
 			var element = this.parentNode.parentNode;
 			element.parentNode.removeChild(element);
@@ -227,6 +226,23 @@ document.getElementById('default_points').onchange = function()
 	updateEvent();
 }
 
+
+function updateDate(obj)
+{
+	var dateText = obj.value;
+
+	if(isNaN(new Date(dateText).getTime()))
+	{
+		obj.classList.add("invalid");
+	}
+	else
+	{
+		obj.classList.remove("invalid");
+		updateEvent();
+	}
+}
+
+
 // updates event in DB 
 function updateEvent()
 {
@@ -240,18 +256,14 @@ function updateEvent()
 	data.event_id = Number(event_id);
 
 
-	eventOutbox.send(data);
+	eventOutbox.send(data); //send the data to the server
 	setFeedbackBox();
-
-	//sendJSON("../api/updateEvent.php", JSON.stringify(data), updateSuccess);
-
 }
 
 function setFeedbackBox()
 {
 	console.log("update");
 	var box = document.getElementById('feedback-box');
-
 	
 	if(box.getAttribute('icon') != "error")
 	{
@@ -270,9 +282,14 @@ function setFeedbackBox()
 function setFeedbackBoxFail()
 {
 	var box = document.getElementById('feedback-box');
-	box.setAttribute('icon', "error");
-}
 
+	if(box.getAttribute('icon') != "error")
+	{
+		alert("Failed to connect to server. The data on this page may be incorrect. Please refresh the page.")
+	}
+
+	box.setAttribute('icon', "error");	
+}
 
 
 function deleteEvent()
@@ -284,9 +301,9 @@ function deleteEvent()
 		data.event_id = Number(event_id);
 		data.delete = "true";
 
-		sendJSON("../api/updateEvent.php", JSON.stringify(data), function(){
-			window.location = "events.php";
-		});
+		sendJSON("../api/updateEvent", JSON.stringify(data), function(){
+			window.location = "events";
+		}, setFeedbackBoxFail);
 	}
 	
 }
@@ -391,8 +408,6 @@ document.getElementById('allMembersTrue').onchange = function(e)
 
 	function addMemberToEvent(memberId)
 	{
-	
-
 		if(!eventAttendees.has(memberId))
 		{
 			//alert('adding member ' + memberId);
@@ -402,7 +417,7 @@ document.getElementById('allMembersTrue').onchange = function(e)
 			data.member_id = memberId;
 			data.note = 0
 
-			sendJSON("../api/updateEventAttendance.php", JSON.stringify(data), setFeedbackBox);
+			sendJSON("../api/updateEventAttendance", JSON.stringify(data), setFeedbackBox, setFeedbackBoxFail);
 
 			addAttendeeToHTML(data);
 
