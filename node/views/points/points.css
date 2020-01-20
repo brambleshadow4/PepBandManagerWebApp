@@ -1,0 +1,9 @@
+.season-div > div
+{
+	margin-left: 20pt;
+}
+
+.season-div > div span, .season-div > div a
+{
+	margin-right: 8pt;
+}

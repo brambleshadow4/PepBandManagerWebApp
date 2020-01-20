@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>BRPB: Members</title>
+		<script src="assets/Trie.js"></script>
+		<script src="assets/api.js"></script>
+		<script src="assets/enumHelper.js"></script>
+		<script src="assets/sets.js"></script>
+		<script src="api/enums.js"></script>
+
+		<link href="members/members.css" type="text/css" rel="stylesheet" />
+		<link href="assets/style1.css" type="text/css" rel="stylesheet" />
+	</head>
+	<body>
+		<nav>
+	<a href="events">Events</a>
+	<a href="members">Members</a>
+	<a href="points">Points</a>
+	<div display="More"></div>
+</nav>
+		<div id='cols' class='column frame left-pad'>
+			
+			<div id='col1' class='frame'>
+
+				<h2>Members</h2>
+				
+				<div>Search list <input id='searchbox' type='search'>
+					
+					<button onclick="createNewMember();">Create New Member</button>
+					
+				</div>
+				
+				<div class='scroll frame'>
+					<div id='results-container'>
+						<table id='results'>
+							<tr><th>Name</th><th>NetID</th><th>Class</th><th>Instrument</th><th id='nickname_header'>Nickname</th></tr>
+						</table>
+					</div>
+				</div>
+				
+			</div>
+
+			<div id="col2" class='frame left-pad'>
+				
+				<h2><span>Edit Member </span><span id='feedback-box' icon="none"></span></h2>
+				<div id='form-container'>
+					<input type="hidden" id="id" />
+					<input type='hidden' id='token' value='{{crsf}}'/>
+
+					<div class='netid-container'>
+						<label>Net ID/email</label>
+						<input id="netid"/>
+						<button id='netid-button' onclick="onNetidButtonClick()"></button>
+					</div>
+
+					<div><label>First Name</label><input oninput='updateMember()' id="first_name" /></div>
+
+					<div><label>Last Name</label><input oninput='updateMember()' id="last_name" /></div>
+
+					<div><label>Class Year</label><input oninput='updateMember()' id="class_year" type="number"/></div>				
+
+					<div><label>Instrument</label><span id='instrument_id-container'></span></div>
+
+					<div><label>Nick Name (optional)</label><input oninput='updateMember()' id="nick_name" /></div>
+
+					<div id='delete-container'><button onclick='deleteMember();'>Delete Member</button></div>
+				</div>
+			</div>
+
+		</div>
+
+		<script src="members/members.js"></script>
+	</body>
+</html>

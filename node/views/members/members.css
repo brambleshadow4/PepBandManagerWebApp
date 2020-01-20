@@ -1,0 +1,74 @@
+
+
+form {display: inline;}
+
+
+
+.netid-container { margin-bottom: 30pt; }
+
+.nickname
+{
+	max-width: 5em;
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.netid
+{
+	max-width: 6em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+table,tr,td {
+	border-collapse: collapse;
+}
+
+td
+{
+	padding-right: 5px;
+	border-collapse: collapse;
+}
+
+#nickname_header
+{
+
+}
+
+#col1
+{
+	width: 60%;
+}
+
+#col2
+{
+	width: 40%;
+	display: none;
+}
+
+#col2 label
+{
+	display: inline-block;
+	width: 25%;
+}
+
+tr.member-row
+{
+	cursor: pointer;
+}
+
+td {
+	border-width: 0px;
+}
+
+tr.member-row:hover{
+	background-color: #FFAAAA;
+}
+
+
+
+#delete-container
+{
+	margin-top: .5in;
+}
