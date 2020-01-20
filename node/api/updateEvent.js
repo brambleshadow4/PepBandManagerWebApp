@@ -48,7 +48,7 @@ exports.run = function(req, res)
 			|| req.body.event_type === undefined
 		)
 		{
-			console.log ("undefied field probelm"); 
+			console.log ("undefied field problem"); 
 			break;
 		};
 

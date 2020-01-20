@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+html, body {
+    height: 100%;
+    margin: 0px;
+}
+
+body{
+	
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	font-family: Roboto, sans-serif;
+
+}
+/* Navigation */
+	nav 
+	{
+		color: white;
+		background-color: red;
+		padding-left: 8pt;
+		font-size: 14pt;
+		
+	}
+
+	nav a
+	{
+		padding: 8pt;
+		text-decoration: none;
+		color: white;
+		display: inline-block;
+	}
+
+	nav a:hover
+	{
+		background-color: #cc0000; /*#b30000;*/
+	}
+
+/* Layout */
+
+	.frame
+	{
+		display: flex;
+		flex-grow: 1;
+		flex-shrink: 1;
+		overflow: hidden;
+		height: 100%;
+
+		flex-direction: column;
+	}
+
+	.scroll.frame
+	{
+		overflow-y: auto;
+	}
+
+	.column.frame
+	{
+		flex-direction: row;
+	}
+
+
+.left-pad
+{
+	padding-left: 12pt;
+}
+
+/* ICONS */
+
+	span[icon]
+	{
+		width: 25px;
+		height: 25px;
+		display:inline-block;
+	}
+
+	span[icon="success"]
+	{
+		background-image: url('../assets/icons/ios-checkmark-circle-outline.svg');	
+	}
+
+	span[icon="error"]
+	{
+		background-image: url('../assets/icons/ios-warning.svg');
+	}
+	span[icon="none"]
+	{
+	}
+
+	span[icon="loading"]
+	{
+		background-image: url('../assets/icons/loading.svg');
+		animation-name: rotate;
+		animation-duration: 3s;
+		display:inline-block;
+	}
+
+	@keyframes rotate
+	{
+		0% { transform: rotate(0deg); }
+		25% { transform: rotate(90deg); }
+		50% { transform: rotate(180deg); }
+		75% { transform: rotate(270deg); }
+		100% { transform: rotate(360deg); }
+	}

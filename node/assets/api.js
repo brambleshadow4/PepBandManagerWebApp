@@ -70,7 +70,7 @@ function sendJSON(url, data, handler, failhandler){
 	{
 		if (this.readyState == 4 && this.status == 200)
 		{
-			handler();
+			handler(this.response);
 		}
 
 		if(this.readyState == 4 && this.status >= 400)

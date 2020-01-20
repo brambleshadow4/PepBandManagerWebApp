@@ -8,23 +8,23 @@ DROP TABLE IF EXISTS Seasons;
 DROP TABLE IF EXISTS Suckpoint_Members;
 
 CREATE TABLE Instruments (
-    id int AUTO_INCREMENT PRIMARY KEY,
+    id int PRIMARY KEY AUTOINCREMENT,
     name varchar(255)
 );
 
 CREATE TABLE Members (
-    id int AUTO_INCREMENT PRIMARY KEY,
-    netid varchar(255) UNIQUE,
-    first_name varchar(255),
-    last_name varchar(255),
-    nick_name varchar(255),
-    class_year int,
-    instrument_id int -- People play many instruments, but this is the one to sort them in.
-);
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    netid varchar(255) UNIQUE NOT NULL,
+    first_name varchar(255) NOT NULL,
+    last_name varchar(255) NOT NULL,
+    nick_name varchar(255) NOT NULL,
+    class_year int NOT NULL, 
+    instrument_id int  NOT NULL -- People play many instruments, but this is the one to sort them in.
+); 
 
 CREATE TABLE Event_Attendance (
 
-	id int AUTO_INCREMENT PRIMARY KEY, 
+	id INTEGER PRIMARY KEY AUTOINCREMENT, 
 	member_id int,
 	event_id int,
 	points int NULL, -- If null, user will gain the default points for the event
@@ -35,7 +35,7 @@ CREATE INDEX memberIndex ON Event_Attendance (member_id);
 CREATE INDEX eventIndex ON Event_Attendance (event_id);
 
 CREATE TABLE Attendance_Notes (
-	id int PRIMARY KEY,
+	id INTEGER PRIMARY KEY,
 	name varchar(255)
 );
 
@@ -47,7 +47,7 @@ INSERT INTO Attendance_Notes (id, name) VALUES
 
 
 CREATE TABLE Events (
-	id int AUTO_INCREMENT PRIMARY KEY,
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name varchar(255),
 	season_id int,
 	event_type_id int,
@@ -59,17 +59,22 @@ CREATE TABLE Events (
 CREATE INDEX seasonIndex ON Events (season_id);
 
 CREATE TABLE Event_Types (
-	id int AUTO_INCREMENT PRIMARY KEY,
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name varchar(255)
 );
 
 CREATE TABLE Seasons (
-	id int AUTO_INCREMENT PRIMARY KEY,
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	start_date date,
 	name varchar(255)
 );
 
 CREATE TABLE Suckpoint_Members (
 	member_id int NOT NULL -- represents who's currently signed up for suck points.
+);
+
+CREATE TABLE Admins (
+	netid varchar(255) NOT NULL,
+	role int NOT NULL 
 );
 
