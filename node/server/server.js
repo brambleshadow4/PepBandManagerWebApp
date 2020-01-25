@@ -5,9 +5,25 @@ const fs = require('fs')
 const app = express()
 
 var settings = {}
-settings.raw = fs.readFileSync("server/settings.txt");
-settings.HTTPS = settings.raw.indexOf("HTTPS=true") != -1;
-settings.NO_AUTH = settings.raw.indexOf("NO_AUTH=true") != -1;
+var settingsRaw = fs.readFileSync("server/settings.txt");
+var settingsList = settingsRaw.toString().split(/\r?\n/g);
+
+for (var line of settingsList)
+{
+	var eq = line.indexOf('=');
+	if(eq != -1)
+	{	
+		var key = line.substring(0,eq);
+		settings[key] = line.substring(eq+1);
+
+		if(settings[key] === "true")
+			settings[key] = true;
+		if(settings[key] === "false")
+			settings[key] = false;
+	}
+}
+
+console.log(settings);
 
 app.use(require('cookie-parser')());
 app.use(require('express-session')(
@@ -208,9 +224,9 @@ function bufferPostData(req, res, next)
 if(settings.online)
 {
 	https.createServer({
-		key: fs.readFileSync('server/server.key'),
-		cert: fs.readFileSync('server/server.cert'),
-		passphrase: 'jeremy'
+		key: fs.readFileSync(settings.KEY),
+		cert: fs.readFileSync(settings.CERT),
+		passphrase: settings.PASSPHRASE
 	}, app)
 	.listen(443, function () {
   		console.log('Example app listening on port 443!')

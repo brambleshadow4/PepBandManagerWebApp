@@ -4,4 +4,4 @@ migration/*.pickle
 node/server/*.key
 node/db/*.db
 node/server/*.cert
-
+node/server/settings.txt
