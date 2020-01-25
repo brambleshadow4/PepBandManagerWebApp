@@ -1,5 +1,4 @@
 const express = require('express');
-const uuidv4 = require('uuid/v4');
 const https = require('https')
 const bodyParser = require('body-parser');
 const fs = require('fs')
@@ -7,7 +6,8 @@ const app = express()
 
 var settings = {}
 settings.raw = fs.readFileSync("server/settings.txt");
-settings.online = settings.raw.indexOf("ONLINE=true") != -1;
+settings.HTTPS = settings.raw.indexOf("HTTPS=true") != -1;
+settings.NO_AUTH = settings.raw.indexOf("NO_AUTH=true") != -1;
 
 app.use(require('cookie-parser')());
 app.use(require('express-session')(
@@ -16,16 +16,22 @@ app.use(require('express-session')(
 
 const port = 80;
 
-app.get('/login', function (req, res) {
-
-	if(!settings.online)
+// login
+	if(!settings.HTTPS)
 	{
-		res.redirect("/events");
-		return;
+		app.post('/login', bodyParser.urlencoded({extended: true}), function (req, res) {	
+			req.settings = settings;
+			require('./auth.js').run(req,res);
+		});
 	}
-	
-	require('./server/auth.js').run(req,res);
-});
+	else
+	{
+		app.post('/login', function (req, res) {	
+			req.settings = settings;
+			require('./auth.js').run(req,res);
+		});
+	}
+
 
 // Always allow access to the assets folder; no login necessary.
 app.get('/assets/*', function (req, res) {
@@ -85,10 +91,18 @@ app.get('/assets/*', function (req, res) {
 
 // Landing Page
 	app.get('/', function (req, res) {
-		if(settings.online)
-			res.sendFile('/views/landing/landing.html', {root:"./"})
+		if(settings.HTTPS)
+		{
+			res.sendFile('/views/landing/landing.html', {root:"./"});
+		}
+		else if(settings.NO_AUTH)
+		{
+			res.sendFile("/views/landing/landingNoAuth.html", {root:"./"});
+		}
 		else
-			res.redirect("/events");
+		{
+			res.sendFile('/views/landing/landingDebug.html', {root:"./"});
+		}
 	})
 
 // Apis
@@ -131,13 +145,7 @@ app.get('/*', function (req, res) {
 
 function checkAdmin(req,res,next)
 {	
-	if(!settings.online)
-	{
-		next();
-		return;
-	}
-
-	if(req.session.isAdmin)
+	if(req.session.role === 1)
 		next();
 	else
 		res.redirect("/");

@@ -2,6 +2,6 @@ migration/*import.sql
 migration/*.xml
 migration/*.pickle
 node/server/*.key
-node/db/pepband.db
+node/db/*.db
 node/server/*.cert
 

@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS Seasons;
 DROP TABLE IF EXISTS Suckpoint_Members;
 
 CREATE TABLE Instruments (
-    id int PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name varchar(255)
 );
 
