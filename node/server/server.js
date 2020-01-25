@@ -221,7 +221,7 @@ function bufferPostData(req, res, next)
 
 
 
-if(settings.online)
+if(settings.HTTPS)
 {
 	https.createServer({
 		key: fs.readFileSync(settings.KEY),
