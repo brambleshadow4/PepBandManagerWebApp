@@ -60,13 +60,21 @@ async function verify(token)
 		//[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
 	});
 	const payload = ticket.getPayload();
-	const userid = payload['sub'];
+	const email = payload['email'];
 
-	console.log(payload);
+	if(payload['email_verified'])
+	{
+		if(email.endsWith("@cornell.edu"))
+		{
+			return email.substring(0, email.length-12);
+		}
 
-	return "";
-	// If request specified a G Suite domain:
-	//const domain = payload['hd'];
+		return email;
+	}
+	else
+	{
+		return "";
+	}
 }
 
 async function getRoleFromDb(netID)
