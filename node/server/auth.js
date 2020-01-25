@@ -12,7 +12,7 @@ exports.run = async function(req, res)
 
 	if(req.settings.HTTPS)
 	{
-		req.session.netID = await verify().catch(function(arg)
+		req.session.netID = await verify(req.body.token).catch(function(arg)
 		{
 			console.error(arg);
 			return "";
@@ -45,7 +45,7 @@ exports.run = async function(req, res)
 }
 
 
-async function verify() 
+async function verify(token) 
 {
 	const CLIENT_ID = "428252312756-djr3h6is5c0s8lfr5ev3pr1567rnnjat.apps.googleusercontent.com";
 

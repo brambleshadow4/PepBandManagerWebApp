@@ -18,7 +18,7 @@
 		<div class="g-signin2" data-onsuccess="onSignIn" data-theme="light"></div>
 
 		<form action="login" method="POST">
-			<input type="hidden" name="id_token" id='id_token' />
+			<input type="hidden" name="token" id='token' />
 			<input type="submit" disabled id='submit' />
 		</form>
 
@@ -35,7 +35,7 @@
 
 	        // The ID token you need to pass to your backend:
 	        var id_token = googleUser.getAuthResponse().id_token;
-	        document.getElementById('id_token').value = id_token;
+	        document.getElementById('token').value = id_token;
 	        document.getElementById('submit').removeAttribute("disabled");
 	        //console.log("ID Token: " + id_token);
 	      }

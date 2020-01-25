@@ -33,20 +33,12 @@ app.use(require('express-session')(
 const port = 80;
 
 // login
-	if(!settings.HTTPS)
-	{
-		app.post('/login', bodyParser.urlencoded({extended: true}), function (req, res) {	
-			req.settings = settings;
-			require('./auth.js').run(req,res);
-		});
-	}
-	else
-	{
-		app.post('/login', function (req, res) {	
-			req.settings = settings;
-			require('./auth.js').run(req,res);
-		});
-	}
+
+	app.post('/login', bodyParser.urlencoded({extended: true}), function (req, res) {	
+		req.settings = settings;
+		require('./auth.js').run(req,res);
+	});
+	
 
 
 // Always allow access to the assets folder; no login necessary.
