@@ -49,7 +49,7 @@ async function verify()
 {
 	const CLIENT_ID = "428252312756-djr3h6is5c0s8lfr5ev3pr1567rnnjat.apps.googleusercontent.com";
 
-	const OAuth2Client = require('google-auth-library');
+	const {OAuth2Client} = require('google-auth-library');
 	const client = new OAuth2Client(CLIENT_ID);
 
 	const ticket = await client.verifyIdToken({
