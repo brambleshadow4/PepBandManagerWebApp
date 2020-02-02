@@ -1,58 +1,3 @@
-body
-{
-	margin: 0px;
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	right: 0px;
-	bottom: 0px;
-
-
-	padding-left: 8px;
-	align-items: stretch;
-
-	display: flex;
-	flex-direction: column;
-
-	overflow: hidden;
-}
-
-#cols
-{
-	display: flex;
-	overflow: hidden;
-}
-
-#col1
-{
-	flex-grow: 0;
-	flex-shrink: 0;
-	display: inline-block;
-	overflow: hidden;
-
-	margin-right: 10px;
-	padding-bottom: 1in;
-}
-
-#col2
-{
-	flex-grow: 1;
-	flex-shrink: 1;
-	overflow-y: auto;
-	
-	padding-bottom: 20px;
-	
-}
-
-#col2 > div { 
-	position: absolute; 
-	top: 0px;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
-
-}
-
 .member, .new-member-span
 {
 	display: block;
@@ -129,9 +74,6 @@ h1{
 	margin-top: 8px;
 }
 
-h2{margin-top: 0px;
-}
-
 h2 span {vertical-align: middle;}
 
 .member .mini {
@@ -145,56 +87,35 @@ h2 span {vertical-align: middle;}
 	background-color: #FF8888;
 }
 
-.success-check::before
-{
-	animation-name: success-check;
-	color: white;
- 	animation-duration: 1s;
-	content: "Updated ✔";
-	
-	width: 1in;
-	height: 1in;
-}
-
-
-span[icon]
-{
-	width: 25px;
-	height: 25px;
-	display:inline-block;
-}
-
-span[icon="check"]
-{
-	background-image: url('../assets/icons/ios-checkmark-circle-outline.svg');	
-}
-
-span[icon="error"]
-{
-	background-image: url('../assets/icons/ios-warning.svg');
-}
-span[icon="none"]
-{
-}
-
-span[icon="loading"]
-{
-	background-image: url('../assets/icons/loading.svg');
-	animation-name: rotate;
-	animation-duration: 3s;
-	display:inline-block;	
-}
-
-@keyframes rotate
-{
-	0% { transform: rotate(0deg); }
-	25% { transform: rotate(90deg); }
-	50% { transform: rotate(180deg); }
-	75% { transform: rotate(270deg); }
-	100% { transform: rotate(360deg); }
-}
 
 #event-info label {
 	width: 1in;
 	display: inline-block;
+}
+
+#close-button
+{
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	cursor: pointer;
+}
+
+
+@media only screen and (max-width: 600px) 
+{
+	body, body table, input, select
+	{
+		font-size: 8pt;
+	}
+
+	#attendees select
+	{
+		max-width: .7in
+	}
+
+	#attendees input
+	{
+		max-width: .25in;
+	}
 }

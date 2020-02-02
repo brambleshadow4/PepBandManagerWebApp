@@ -1,0 +1,143 @@
+iframe
+{
+	border: none;
+	width: 100%;
+	height: 100%;
+}
+
+#header > table
+{
+	display: inline-block;
+	vertical-align: middle;
+}
+h2
+{
+	display: inline-block;
+	margin-right: 2in;
+}
+
+#iframe-container
+{
+	/*min-width: min(100vw,800px);*/
+	flex-shrink: 0;
+	display: none;
+}
+
+#events-container
+{
+	flex-shrink: 1;
+}
+
+
+button
+{
+	display: inline-block;
+}
+
+
+.by-date .event .date
+{
+	width: .5in;
+}
+.event .date
+{
+	display: inline-block;
+	vertical-align: middle;
+	width: 1in;
+}
+
+.event .name
+{
+	display: inline-block;
+	width: 3in;
+	vertical-align: middle;
+}
+
+.event .type
+{
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+.event-group
+{
+	margin-left: .2in;
+}
+
+h3
+{
+	cursor: pointer;
+	margin: 4pt 0px;
+}
+
+h3::before
+{
+	background-size: 23px 23px;
+    display: inline-block;
+    width: 23px; 
+    height: 23px;
+    content:"";
+    vertical-align: text-bottom;
+}
+
+h3.open::before
+{
+	background-image: url(../assets/icons/ios-arrow-down.svg);
+}
+
+
+
+h3.closed::before
+{
+	background-image: url(../assets/icons/ios-arrow-forward.svg);
+}
+
+
+
+a.event
+{
+	color: black;
+	text-decoration: none;
+	display: block;
+	max-width: 6in;
+
+
+}
+
+a.event:nth-child(odd)
+{
+	background-color: #E0E0E0;
+}
+
+a.event:nth-child(even)
+{
+	background-color: #F8F8F8;
+}
+
+a.event:hover
+{
+	background-color: #FFC0C0;
+}
+
+#selected
+{
+	background-color: #FFA0A0;
+}
+
+@media only screen and (max-width: 1000px) 
+{
+	body, body table, select, button
+	{
+		font-size: 8pt;
+	}
+
+	h3:before
+	{
+		background-size: 15px 15px;
+	    display: inline-block;
+	    width: 15px; 
+	    height: 15px;
+	}
+}

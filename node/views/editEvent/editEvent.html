@@ -6,6 +6,7 @@
 		<script src="../assets/api.js"></script>
 		<script src="../api/enums.js"></script>
 		<script src="../assets/enumHelper.js"></script>
+		<link type="text/css" href="../assets/style1.css" rel="stylesheet" />
 		<link type="text/css" href="editEvent/editEvent.css" rel="stylesheet" />
 
 		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
@@ -13,14 +14,14 @@
 		<meta http-equiv="Expires" content="0"/>
 
 	</head>
-	<body class="expander">
-		
-		<div><h1>BRPB Online Manager</h1></div>
+	<body>
 
-		<div id='cols'>
+		<span icon='close' title="Close this event" id='close-button' onclick="closeEvent();"></span>
+
+		<div id='cols' class="column frame left-pad">
 			
 			<div id='col1'>
-				<h2><span>Edit Event </span><span id='feedback-box' icon="none"></span></h2>
+				<h2><span>Edit Event</span><span id='feedback-box' icon="none"></span></h2>
 
 				<div id='event-info'>
 
@@ -36,8 +37,8 @@
 					<input type='hidden' id='token' value='{{crsf}}'/>
 					
 					<div>
-						<label for='description'>Description</label>
-						<input maxlength="255" id='description' oninput="updateEvent()"/>
+						<label for='description'>Description</label><br>
+						<textarea maxlength="255" id='description' oninput="updateEvent()"> </textarea>
 					</div>
 					
 				</div>
@@ -48,29 +49,27 @@
 					<span class='no-wrap'><label for='allMembersTrue'>All members</label> <input id='allMembersTrue' name='allMembers' type='radio'></span>
 				</div>
 
-				<form action='newMember.php' method='POST' style="display:none">
-					<input name='redirect' type='hidden' id='redirect' value='editEvent.php' />
-					<script> document.getElementById('redirect').value += location.search; </script>
-					<input type='submit' id='new-member'/>
-				</form>
-
 				<div id='searchbox-container'>
 					<input id='searchbox' type='search'>
 					<div id='results' class="hidden"></div>
 				</div>
 				<hr>
-
+				
 				<button id='delete' onclick="deleteEvent();">Delete Event</button>
 				
 			</div>
 
-			<div id=col2>
-				<table id='attendees'>
-					<tr><th>Attendee</th><th>Points</th><th>Note</th></tr>
-				</table>
+			<div class="frame left-pad">
+
+				<h2>Attendees</h2>
+				<div id='atendees-container'class='scroll frame'>
+					<table id='attendees'>
+					</table>
+				</div>
 			</div>
 		
 		</div>
+
 
 
 		

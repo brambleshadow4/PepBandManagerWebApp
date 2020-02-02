@@ -47,54 +47,57 @@ function loadMembers(membersObj)
 			}
 		}
 	}
+
+	displaySearchResults();
 }
 
 // Load data into the page
 
-loadJSON("../api/getEvent?id=" + location.search.substring(1), function(data){
-
-	let eventData = data;
-
-	//fill event-info inputs w/ values
-	document.getElementById('default_points').value = eventData.default_points;
-	document.getElementById('name').value = eventData.name;
-	document.getElementById('date').value = eventData.date;
-	document.getElementById('description').value = eventData.description;
-
-	document.getElementsByTagName('title')[0].innerHTML = "BRPB: " + eventData.name;
-
-	var select = makeEventTypeSelect(enums);
-	select.id="event_type";
-	select.onchange = updateEvent;
-	document.getElementById('event_type_container').appendChild(select);
-
-	select.value = eventData.event_type_id;
-
-	// Set the season for the members search bar
-	document.getElementById('allMembersFalse').onchange = function(e)
+loadJSON("../api/getEvent?id=" + location.search.substring(1), 
+	function(data)
 	{
-		loadJSON("../api/getMembers?season=" + eventData.season_id, loadMembers, function(){ alert("Failed to load band members")});
-	}
+		let eventData = data;
 
-	//Call API to load member data for searchbar + attendees list
-	loadJSON("../api/getMembers?season=" + eventData.season_id, function(members){
+		//fill event-info inputs w/ values
+		document.getElementById('default_points').value = eventData.default_points;
+		document.getElementById('name').value = eventData.name;
+		document.getElementById('date').value = eventData.date;
+		document.getElementById('description').value = eventData.description;
 
-		loadMembers(members);
-		
-		for(let entry of eventData.attendees)
+		document.getElementsByTagName('title')[0].innerHTML = "BRPB: " + eventData.name;
+
+		var select = makeEventTypeSelect(enums);
+		select.id="event_type";
+		select.onchange = updateEvent;
+		document.getElementById('event_type_container').appendChild(select);
+
+		select.value = eventData.event_type_id;
+
+		// Set the season for the members search bar
+		document.getElementById('allMembersFalse').onchange = function(e)
 		{
-			addAttendeeToHTML(entry);
+			loadJSON("../api/getMembers?season=" + eventData.season_id, loadMembers, function(){ alert("Failed to load band members")});
 		}
-	}, function(stuff)
-	{
-		alert("Failed to get members");
-	});
-}, function(fails){
 
-	window.location = "events";
-});
-
-
+		//Call API to load member data for searchbar + attendees list
+		loadJSON("../api/getMembers?season=" + eventData.season_id, 
+			function(members)
+			{
+				loadMembers(members);
+				
+				for(let entry of eventData.attendees)
+				{
+					addAttendeeToHTML(entry);
+				}
+			},
+			function(stuff)
+			{
+				alert("Failed to get members");
+			}
+		);
+	}, 
+	closeEvent
+);
 
 
 // adds an attendee to the webpage
@@ -269,7 +272,7 @@ function setFeedbackBox()
 	{
 		if(boxesSending == 0)
 		{
-			box.setAttribute('icon', "check");
+			box.setAttribute('icon', "success");
 		}
 		else
 		{
@@ -291,6 +294,10 @@ function setFeedbackBoxFail()
 	box.setAttribute('icon', "error");	
 }
 
+function closeEvent()
+{
+	window.parent.postMessage("closeEvent","*"); 
+}
 
 function deleteEvent()
 {
@@ -301,9 +308,7 @@ function deleteEvent()
 		data.event_id = Number(event_id);
 		data.delete = "true";
 
-		sendJSON("../api/updateEvent", JSON.stringify(data), function(){
-			window.location = "events";
-		}, setFeedbackBoxFail);
+		sendJSON("../api/updateEvent", JSON.stringify(data), closeEvent, setFeedbackBoxFail);
 	}
 	
 }
@@ -320,15 +325,19 @@ document.getElementById('allMembersTrue').onchange = function(e)
 	 * Searches the list of members for a match
 	 * PRECONDITION: memberSearch and memberLookup structures initialized.
 	 */
-	document.getElementById('searchbox').oninput = function(e)
+
+
+	function displaySearchResults()
 	{
-		this.removeAttribute("selected_id");
+		var searchbox = document.getElementById('searchbox');
+
+		searchbox.removeAttribute("selected_id");
 
 		var resultsDiv = document.getElementById('results');
 
-		var keys = this.value.toLowerCase().trim().split(" ");
+		var keys = searchbox.value.toLowerCase().trim().split(" ");
 
-		if(this.value.trim() == "")
+		if(searchbox.value.trim() == "")
 		{
 			resultsDiv.className = "hidden";
 			resultsDiv.innerHTML = "";
@@ -346,20 +355,21 @@ document.getElementById('allMembersTrue').onchange = function(e)
 			}
 
 			var count = 0;
+			const maxResults = 5;
 			for (let i of idSet.keys())
 			{
 				if (idSet.size == 1)
 				{
-					this.setAttribute('selected_id', i);
+					searchbox.setAttribute('selected_id', i);
 				}
 
-				if (count == 4)
+				if (count == maxResults)
 				{
 					var span = document.createElement('span');
 					span.innerHTML = "...";	
 					results.appendChild(span);
 				}
-				else if (count < 4)
+				else if (count < maxResults)
 				{
 					var span = document.createElement('span');
 					var record = memberLookup[i];
@@ -386,17 +396,37 @@ document.getElementById('allMembersTrue').onchange = function(e)
 
 			if(count == 0)
 			{
-				var span = document.createElement('span');
-				span.className = 'new-member-span';
-				span.innerHTML = "<em>Create a new member</em>";
-				span.onmousedown = function(e)
+				if(document.getElementById("allMembersTrue").checked)
 				{
-					if(e.button == 0) document.getElementById('new-member').click();
-				}	
-				results.appendChild(span);
+					var span = document.createElement('span');
+					span.className = 'new-member-span';
+					span.innerHTML = "<em>Create a new member</em>";
+					span.onmousedown = function(e)
+					{
+						if(e.button == 0) document.getElementById('new-member').click();
+					}	
+					results.appendChild(span);
+				}
+				else
+				{
+					var span = document.createElement('span');
+					span.className = 'new-member-span';
+					span.innerHTML = "<em>Search all members</em>";
+					span.onmousedown = function(e)
+					{
+						if(e.button == 0) 
+						{
+							document.getElementById('allMembersTrue').click();						
+						}
+					}	
+					results.appendChild(span);
+				}
+				
 			}
 		}
 	}
+
+	document.getElementById('searchbox').oninput = displaySearchResults;
 
 	document.getElementById('searchbox').onkeydown = function(e)
 	{
@@ -421,20 +451,19 @@ document.getElementById('allMembersTrue').onchange = function(e)
 
 			addAttendeeToHTML(data);
 
-			var col2 = document.getElementById('col2');
-			col2.scrollTop = col2.scrollHeight;
+			var parent = document.getElementById('atendees-container');
+			parent.scrollTop = parent.scrollHeight;
 		}
 
-		document.getElementById('searchbox').value = "";
+		var searchbox = document.getElementById('searchbox');
+		searchbox.value = "";
 		document.getElementById('results').className = "hidden";
-
 	}
 
 	var MOUSE_IN_RESULTS = false;
 	document.getElementById('searchbox').onblur = function(e)
 	{
 		document.getElementById('results').className = "hidden";
-
 	}
 
 	document.getElementById('searchbox').onfocus = document.getElementById('searchbox').oninput

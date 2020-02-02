@@ -134,7 +134,7 @@ app.post('/api/updateEventAttendance', checkAdmin, bufferPostData, function (req
 	require('../api/updateEventAttendance.js').run(req,res);
 })
 
-app.post('/events/new', checkAdmin, bodyParser.urlencoded({extended: true}), function (req, res) {
+app.post('/events/new', checkAdmin, bufferPostData, function (req, res) {
 	require('../api/newEvent.js').run(req,res);
 })
 

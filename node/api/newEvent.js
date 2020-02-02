@@ -2,10 +2,6 @@ const sqlite3 = require('sqlite3').verbose();
 exports.run = function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');
-	
-	console.log("new event.js running")
-
-	console.log(req.body);
 
 	if(!req.body || !req.body.token || req.body.token != req.session.crsf)
 	{
@@ -40,10 +36,9 @@ exports.run = function(req, res)
 				if (err)
 					throw err;
 				
-				console.log("redirecting")
-				res.redirect("../editEvent?" + max);
-
-
+				res.setHeader("Content-Type", "text/json");
+				res.writeHead(200);
+				res.end("\"editEvent?" + max + '"');
 			});
 
 		}

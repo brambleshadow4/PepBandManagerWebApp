@@ -5,7 +5,6 @@ exports.run = function(req, res)
 	var sql;
 	var season = 0;
 
-	console.log(req.body);
 
 	do
 	{
