@@ -5,8 +5,6 @@ exports.run = function(req, res)
 	var sql;
 	var season = 0;
 
-
-
 	do
 	{
 		if(!req.body)
@@ -37,7 +35,7 @@ exports.run = function(req, res)
 			return;
 		}
 
-		if(isNaN(Number(req.body.note)))
+		if(isNaN(Number(req.body.note)) || isNaN(Number(req.body.instrument_id)) || isNaN(Number(req.body.status)))
 		{ 
 			console.log("something's not a number"); 
 			break;
@@ -57,8 +55,18 @@ exports.run = function(req, res)
 			req.body.member_id,
 			req.body.event_id,
 			points,
-			req.body.note
+			req.body.note,
+			req.body.instrument_id,
+			req.body.status
 		];
+
+		params2 = 
+		[
+			req.body.member_id,
+			req.body.event_id,
+			
+		]
+
 	
 		let db = new sqlite3.Database('./db/pepband.db');
 	
@@ -66,18 +74,14 @@ exports.run = function(req, res)
 		{
 			if(err) throw err;
 
-			db.all("INSERT INTO Event_Attendance (member_id, event_id, points, note) VALUES (?, ?, ?, ?)", params, (err,rows) => {
+			db.all("INSERT INTO Event_Attendance (member_id, event_id, points, note, instrument_id, status) VALUES (?, ?, ?, ?, ?, ?)", params, (err,rows) => {
 
-				if (err) 
-					throw err;
-
-				rows.forEach((row) => {
-					members.push(row);
-				});
+				if (err) throw err;
 
 				res.setHeader("Content-Type", "text/json");
 				res.writeHead(200);
 				res.end();
+					
 			});
 		});
 

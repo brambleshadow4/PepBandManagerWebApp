@@ -18,29 +18,37 @@
 
 		<span icon='close' title="Close this event" id='close-button' onclick="closeEvent();"></span>
 
-		<div id='cols' class="column frame left-pad">
+		<div id='cols' class="column frame">
 			
-			<div id='col1'>
-				<h2><span>Edit Event</span><span id='feedback-box' icon="none"></span></h2>
+			<div id='col1' class='left-pad right-pad'>
+				<h2><span>Event Details</span><span id='feedback-box' icon="none"></span></h2>
 
 				<div id='event-info'>
 
 					<div>
-						<label for='name'>Event Name</label>
+						<label class='short-label' for='name'>Event Name</label>
 						<input maxlength="255" id='name' oninput="updateEvent()"/> 
 					</div>
-					<div>
-						<label>Type</label> <span id='event_type_container'></span>
-					</div>
-					<div><label>Points</label> <input id='default_points' oninput="updateEvent()" type="number"/> </div>
-					<div><label>Date</label> <input maxlength="255" onchange="updateDate(this)" id='date' type="date" /> </div>
 					<input type='hidden' id='token' value='{{crsf}}'/>
+
+					<div>
+						<label class='short-label'>Type</label> <span id='event_type_container'></span>
+					</div>
+					<div><label class='short-label'>Points</label> <input id='default_points' oninput="updateEvent()" type="number"/> </div>
+					<div><label class='short-label'>Date</label> <input maxlength="255" onchange="updateDate(this)" id='date' type="date" /> </div>
 					
 					<div>
-						<label for='description'>Description</label><br>
+						<label class='short-label' for='description'>Description</label><br>
 						<textarea maxlength="255" id='description' oninput="updateEvent()"> </textarea>
 					</div>
+
+					<br><br>
+					<div>
+						<label for='self-sign-up'>Allow members to self-sign up?</label>
+						<input onchange="" id='self-sign-up' type="checkbox" />
+					</div>
 					
+					<button id='toggle-plan-button' onclick='togglePlan(this);'>Planning View</button>
 				</div>
 				<hr>
 				<div>Search for people to add</div>
@@ -59,20 +67,31 @@
 				
 			</div>
 
-			<div class="frame left-pad">
-
+			<div id='attendees-container' class="frame right-pad">
 				<h2>Attendees</h2>
 				<div id='atendees-container'class='scroll frame'>
 					<table id='attendees'>
 					</table>
 				</div>
 			</div>
-		
+
+			<div class='column frame' id='availble-going'>
+				<div id='available-container' class="frame right-pad">
+					<h2>Who's available? (<span id='available-count'>0</span>)
+						<select id='instrument-filter'>
+							<option value='-1'>Filter: All</option>
+						</select>
+					</h2>
+					<div id='available' class='scroll frame'></div>
+				</div>
+				<div id='going-container' class="right-pad frame">
+					<h2>Who's going? (<span id='going-count'>0</span>)</h2>
+					<div id='going' class='scroll frame bottom-pad'></div>
+				</div>
+			</div>
+			
 		</div>
 
-
-
-		
 		<script src="editEvent/editEvent.js"></script>
 	</body>
 </html>

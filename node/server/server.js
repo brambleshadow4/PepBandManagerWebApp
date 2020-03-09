@@ -32,6 +32,9 @@ app.use(require('express-session')(
 
 const port = 80;
 
+yep("/components/memberSearchBox.js");
+yep("/components/memberSearchBox.css");
+
 // login
 
 	app.post('/login', bodyParser.urlencoded({extended: true}), function (req, res) {	
@@ -74,6 +77,15 @@ app.get('/assets/*', function (req, res) {
 		sendIfExists("/views" + req.url, res);
 	})
 
+// plan
+	app.get('/plan', checkAdmin, function (req, res) {
+		sendFileWithCRSF('./views/plan/plan.html', req, res);
+	});
+
+	app.get('/plan/*', checkAdmin, function (req, res) {
+		sendIfExists("/views" + req.url, res);
+	})
+
 //join
 	app.get('/join', function (req, res) {
 		res.sendFile('./views/join/join.html', {root:"./"});
@@ -113,7 +125,7 @@ app.get('/assets/*', function (req, res) {
 		}
 	})
 
-// Apis
+// Get Apis
 app.get('/api/enums.js', function (req, res) {
 	require('../api/enums.js').run(req,res);
 })
@@ -130,6 +142,11 @@ app.get('/api/getMembers', checkAdmin, function (req, res) {
 	require('../api/getMembers.js').run(req,res);
 })
 
+app.get('/api/getSeasonPoints', checkAdmin, function (req, res) {
+	require('../api/getSeasonPoints.js').run(req,res);
+})
+
+// Post APIs
 app.post('/api/updateEventAttendance', checkAdmin, bufferPostData, function (req, res) {
 	require('../api/updateEventAttendance.js').run(req,res);
 })
@@ -146,9 +163,19 @@ app.post('/api/updateMember', checkAdmin, bufferPostData, function (req, res) {
 	require('../api/updateMember.js').run(req,res);
 })
 
+
+
 app.get('/*', function (req, res) {
 	res.redirect("/");
 });
+
+
+function yep(url)
+{
+	app.get(url, function(req,res){
+		res.sendFile(url, {root:"./"})
+	})
+}
 
 
 function checkAdmin(req,res,next)

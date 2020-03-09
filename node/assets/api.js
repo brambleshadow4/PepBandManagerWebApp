@@ -10,6 +10,7 @@ function loadJSON(url, handler, failhandler)
 			if(this.status == 200)
 			{
 				var response = JSON.parse(this.responseText);
+				console.log(handler);
 				handler(response);
 			}
 			else
@@ -29,6 +30,16 @@ function loadJSON(url, handler, failhandler)
 	request.open("GET", url, true);
 	request.send();
 }
+
+function loadJsonP(url)
+{
+	return new Promise(function(handler, failhandler)
+	{
+		loadJSON(url, handler, failhandler)
+	});
+}
+
+
 
 /**
 	Asynchronously loads multiple resources [a, b, c] and calls handler only when all

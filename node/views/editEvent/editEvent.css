@@ -88,7 +88,7 @@ h2 span {vertical-align: middle;}
 }
 
 
-#event-info label {
+.short-label {
 	width: 1in;
 	display: inline-block;
 }
@@ -99,6 +99,102 @@ h2 span {vertical-align: middle;}
 	right: 20px;
 	top: 20px;
 	cursor: pointer;
+	z-index: 2;
+}
+
+#available-going
+{
+	flex-direction: row;
+}
+
+#available-container, #going-container 
+{
+	display: none;
+	width: 49%;
+	box-sizing: border-box;
+}
+
+
+
+h4 {margin: 0px;}
+
+
+
+#going .memberRow {margin-left: .25in;}
+
+.memberRow span[icon]
+{
+	width: 20px;
+	height: 20px;
+	background-size: 20px 20px;
+}
+
+.memberRow span[icon="edit"]
+{
+	width: 15px;
+	height: 15px;
+	background-size: 15px 15px;
+}
+
+.memberRow
+{
+	position: relative;
+	vertical-align: middle;
+}
+
+.memberRow span
+{
+	vertical-align: middle;
+}
+
+.memberRow .points
+{
+	width: .5in;
+	display: inline-block;
+}
+
+.memberRow .name
+{
+	width: 2in;
+	display: inline-block;
+
+}
+
+.memberRow .actions
+{
+	display: none;
+	position: absolute;
+	right: 10px;
+}
+
+.memberRow .actions:hover
+{
+	display: block;
+}
+.memberRow .actions span
+{
+	cursor: pointer;
+}
+
+
+.memberRow:nth-child(odd)
+{
+	background-color: #E0E0E0;
+}
+
+.memberRow:nth-child(even)
+{
+	background-color: #F8F8F8;
+}
+
+.memberRow:hover
+{
+	background-color: #FFC0C0;
+}
+
+.memberRow:hover .actions
+{
+	display: inline-block;
 }
 
 

@@ -1,6 +1,13 @@
 var memberSearch = new Trie(); //data loaded from API for use by member search bar
 var memberLookup = {}; //data loaded from API for use by member search bar
-var eventAttendees = new Set(); //used by search bar
+
+
+// member_id -> {status: , instrument: }
+// 0:
+// 1: self-sign up
+// 2: added to event
+// 3: self-sign up & added to event
+var signupStatus = {}; 
 
 var season = -1; 
 var event_id = location.search.substring(1);
@@ -8,21 +15,107 @@ var event_id = location.search.substring(1);
 var eventOutbox = new Outbox("../api/updateEvent", setFeedbackBox, setFeedbackBoxFail);
 var attendeeOutboxes = {};
 
+var isPlanningView = false;
 
+var enumLookup = makeEnumLookup(enums);
+
+for(var instrument in enums.instruments)
+{
+	var option = document.createElement('option');
+	option.value = instrument;
+	option.innerHTML = "Filter: " + enumLookup.instruments[instrument];
+	document.getElementById('instrument-filter').appendChild(option);
+}
+
+var thisSeason;
+
+
+
+// Data Loading Functions
+
+var pointsLoaded = false;
+var seasonMembersLoaded = false;
+var allMembersLoaded = false;
+
+async function dataloadAllMembers()
+{
+	if(allMembersLoaded) return;
+
+	var response = await loadJsonP("../api/getMembers?season=all");
+
+	for(var i=0; i<response.length; i++)
+	{
+		let member = response[i];
+
+		if(memberLookup[member.id] === undefined)
+		{
+			memberLookup[member.id] = member;
+
+			if(pointsLoaded)
+				memberLookup[member.id].points = 0;
+		}
+	}
+
+
+	allMembersLoaded = true;
+	return;
+}
+
+async function dataloadSeasonMembers(seasonId)
+{
+	if(allMembersLoaded) return;
+
+	var response = await loadJsonP("../api/getMembers?season=" + seasonId);
+	
+	for(var i=0; i<response.length; i++)
+	{
+		let member = response[i];
+
+		memberLookup[member.id] = member;
+		memberLookup[member.id].isSeasonMember = true;
+	}
+
+	seasonMembersLoaded = true;
+	return;
+}
+
+async function dataloadSeasonPoints(seasonId)
+{
+	if(pointsLoaded) return;
+
+	var response = await loadJsonP("../api/getSeasonPoints?season=" + seasonId);
+
+	for(var i=0; i < response.length; i++)
+	{
+		memberLookup[response[i].id].points = response[i].points;
+	}
+
+	for(var key in memberLookup)
+	{
+		if(memberLookup[key].points === undefined || memberLookup[key].points === null)
+			memberLookup[key].points = 0
+	}
+	
+	pointsLoaded = true;
+	return;
+}
+
+// Page Loading Functions
 
 /*
  * Takes the members from the API call and enalbe the serach box to use them.
  */
-function loadMembers(membersObj)
+function searchbarLoadMembers(seasonMembersOnly)
 {
 	//create a trie to enable a quick search of people who match search critiera
 	memberSearch = new Trie();
 
-	for(var i in membersObj)
+	for(var i in memberLookup)
 	{
-		var record = membersObj[i];
+		var record = memberLookup[i];
 
-		memberLookup[record.id] = record;
+		if(seasonMembersOnly && !record.isSeasonMember)
+			continue;
 
 		//the keys that can be searched.
 		var searchKeys = [
@@ -53,63 +146,142 @@ function loadMembers(membersObj)
 
 // Load data into the page
 
+loadPage();
+async function loadPage()
+{
+	var data;
+	try
+	{
+		data = await loadJsonP("../api/getEvent?id=" + location.search.substring(1));
+	}
+	catch(exception)
+	{
+		closeEvent();
+	}
+	
+	let eventData = data;
+
+	//fill event-info inputs w/ values
+	document.getElementById('default_points').value = eventData.default_points;
+	document.getElementById('name').value = eventData.name;
+	document.getElementById('date').value = eventData.date;
+	document.getElementById('description').value = eventData.description;
+
+	document.getElementsByTagName('title')[0].innerHTML = "BRPB: " + eventData.name;
+
+	var select = makeEventTypeSelect(enums);
+	select.id="event_type";
+	select.onchange = updateEvent;
+	document.getElementById('event_type_container').appendChild(select);
+
+	select.value = eventData.event_type_id;
+
+
+	thisSeason = eventData.season_id;
+
+	await dataloadSeasonMembers(eventData.season_id);
+
+	for(var key in eventData.attendees)
+	{
+		signupStatus[key] = eventData.attendees[key];
+	}
+
+	renderPointsView();
+	searchbarLoadMembers(true);
+}
+
+
 loadJSON("../api/getEvent?id=" + location.search.substring(1), 
 	function(data)
 	{
-		let eventData = data;
-
-		//fill event-info inputs w/ values
-		document.getElementById('default_points').value = eventData.default_points;
-		document.getElementById('name').value = eventData.name;
-		document.getElementById('date').value = eventData.date;
-		document.getElementById('description').value = eventData.description;
-
-		document.getElementsByTagName('title')[0].innerHTML = "BRPB: " + eventData.name;
-
-		var select = makeEventTypeSelect(enums);
-		select.id="event_type";
-		select.onchange = updateEvent;
-		document.getElementById('event_type_container').appendChild(select);
-
-		select.value = eventData.event_type_id;
-
-		// Set the season for the members search bar
-		document.getElementById('allMembersFalse').onchange = function(e)
-		{
-			loadJSON("../api/getMembers?season=" + eventData.season_id, loadMembers, function(){ alert("Failed to load band members")});
-		}
-
-		//Call API to load member data for searchbar + attendees list
-		loadJSON("../api/getMembers?season=" + eventData.season_id, 
-			function(members)
-			{
-				loadMembers(members);
-				
-				for(let entry of eventData.attendees)
-				{
-					addAttendeeToHTML(entry);
-				}
-			},
-			function(stuff)
-			{
-				alert("Failed to get members");
-			}
-		);
+		
 	}, 
 	closeEvent
 );
 
 
+function renderPointsView()
+{
+	isPlanningView = false;
+
+	window.parent.postMessage("closePlan","*");
+	document.getElementById('attendees-container').style.display = "flex";
+	document.getElementById('available-container').style.display = "none";
+	document.getElementById('going-container').style.display = "none";
+
+	document.getElementById('attendees').innerHTML = "";
+	document.getElementById('toggle-plan-button').innerHTML = "Planning View";
+
+	for(var key in signupStatus)
+	{
+		if(signupStatus[key].instrument_id == null)
+		{
+			signupStatus[key].instrument_id = memberLookup[key].instrument_id;
+		}
+
+		if(signupStatus[key].status >= 2)
+		{
+			addAttendeeToHTML(key);
+		}
+	}
+}
+
+
+async function renderPlanningView()
+{
+	await dataloadSeasonPoints(thisSeason);
+
+	isPlanningView = true;
+
+	window.parent.postMessage("openPlan","*");
+	document.getElementById('attendees-container').style.display = "none";
+	document.getElementById('available-container').style.display = "flex";
+	document.getElementById('going-container').style.display = "flex";
+
+	document.getElementById('available').innerHTML = "";
+	document.getElementById('going').innerHTML = "";
+
+	document.getElementById('toggle-plan-button').innerHTML = "Points View";
+
+	for(var instrument in enums.instruments)
+	{
+		var h4 = document.createElement('h4');
+		var instrumentName = enumLookup.instruments[instrument];
+		h4.innerHTML = `${instrumentName} (<span id="instrument-${instrument}-count">0</span>)`;
+
+		document.getElementById('going').appendChild(h4);
+
+		var div = document.createElement('div');
+		div.id = "instrument-" + instrument;
+		document.getElementById('going').appendChild(div);
+	}
+
+
+	for(var key in signupStatus)
+	{
+		if(signupStatus[key].status >= 2)
+		{
+			addMemberToGoing(key);
+		}
+		else
+		{
+			addMemberToAvailable(key);
+		}
+	}
+}
+
+
 // adds an attendee to the webpage
-function addAttendeeToHTML(entry)
+function addAttendeeToHTML(member_id)
 {
 	//create the new row in the table
-	eventAttendees.add(entry.member_id);
-	let member = memberLookup[entry.member_id];	
+	let member = memberLookup[member_id];
+
+	let entry = signupStatus[member_id];
 
 	var row = document.createElement('tr');
 
-	row.innerHTML = "<td>" + member.first_name + " " + member.last_name + "</td><td></td><td></td>";
+	row.innerHTML = "<td>" + member.first_name + " " + member.last_name + "</td><td></td><td></td><td></td>";
 
 	document.getElementById('attendees').appendChild(row);
 
@@ -135,23 +307,8 @@ function addAttendeeToHTML(entry)
 		}
 
 		//update database 
-		var data = {};
-		data.token = document.getElementById('token').value;
-		data.event_id = Number(event_id);
-		data.member_id = Number(entry.member_id);
-
-		if(this.value != "")
-			data.points = Number(this.value);
-
-		data.note = Number(this.parentNode.parentNode.getElementsByTagName('select')[0].value);
-
-		//send data to db
-		if(attendeeOutboxes[data.member_id] == undefined)
-			attendeeOutboxes[data.member_id] = new Outbox("../api/updateEventAttendance", setFeedbackBox, setFeedbackBoxFail);
-
-		attendeeOutboxes[data.member_id].send(data);
-		setFeedbackBox();
-
+		signupStatus[member_id].points = (this.value == "" ? undefined : Number(this.value));
+		updateAttendee(member_id);
 	}
 
 	row.getElementsByTagName('td')[1].appendChild(pointsBox);
@@ -163,24 +320,8 @@ function addAttendeeToHTML(entry)
 
 	// code to update database entry when note is changed
 	select.oninput = function(){
-
-		var data = {};
-		data.token = document.getElementById('token').value;
-		data.event_id = Number(event_id);
-		data.member_id = Number(entry.member_id);
-		data.note = Number(this.value);
-
-		var points = this.parentNode.parentNode.getElementsByTagName('input')[0].value;
-		if(points != "")
-			data.points = Number(points);	
-
-		if(attendeeOutboxes[data.member_id] == undefined)
-			attendeeOutboxes[data.member_id] = new Outbox("../api/updateEventAttendance", setFeedbackBox, setFeedbackBoxFail);
-
-		attendeeOutboxes[data.member_id].send(data);
-		setFeedbackBox();
-
-	
+		signupStatus[member_id].note = this.value;
+		updateAttendee(member_id);
 	}
 
 	row.getElementsByTagName('td')[2].appendChild(select);
@@ -197,24 +338,147 @@ function addAttendeeToHTML(entry)
 
 		if(confirm("Are you sure you want to remove " + nameText + "?"))
 		{
-			var data = {};
-			data.token = document.getElementById('token').value;
-			data.event_id = Number(event_id);
-			data.member_id = Number(entry.member_id);
-			data.delete = "true";
-
-			sendJSON("../api/updateEventAttendance", JSON.stringify(data), setFeedbackBox, setFeedbackBoxFail);
+			delete signupStatus[member_id];
+			updateAttendee(member_id);
 
 			var element = this.parentNode.parentNode;
-			element.parentNode.removeChild(element);
-			
-			eventAttendees.delete(data.member_id);
+			element.parentNode.removeChild(element);			
 		}
-		
 	}
-	row.getElementsByTagName('td')[2].appendChild(span);	
+	row.getElementsByTagName('td')[3].appendChild(span);	
 }
 
+function addMemberToAvailable(memberId)
+{ 
+	console.log(memberId);
+
+	var memberObj = memberLookup[memberId]
+	var points = (memberLookup[memberId].points === undefined ? 0 : memberObj.points);
+	var div = document.createElement('div');
+	
+	div.id = "available-" + memberId;
+	div.className = "memberRow";
+
+	div.setAttribute('points', points);
+
+	var instrument = enumLookup.instruments[memberObj.instrument_id];
+
+	div.innerHTML = 
+		`<span class="points">${points}</span>
+		<span class='name'>${memberObj.first_name} ${memberObj.last_name}</span>
+		<span class='instrument'>${instrument}</span>
+		<span class="actions">
+			<span icon="close" title="Remove"></span>
+			<span icon="edit"></span>
+			<span icon="add" title="Add to Going"></span>
+		</span>
+		`;
+
+	div.setAttribute('instrument', memberObj.instrument_id);
+
+	var actionSpans = div.getElementsByClassName('actions')[0].getElementsByTagName('span');
+
+	actionSpans[0].onclick = function(e)
+	{
+		removeMemberFromAvailable(memberId);
+		delete signupStatus[memberId];
+		updateAttendee(memberId);
+	}
+
+	actionSpans[2].onclick = function(e)
+	{
+		console.log(memberId + " moving back to going")
+
+		removeMemberFromAvailable(memberId);
+		addMemberToGoing(memberId);
+
+		signupStatus[memberId].status += 2;
+		updateAttendee(memberId);
+	}
+
+	var divs = document.getElementById('available').getElementsByClassName("memberRow");
+	var i=0;
+	while(true)
+	{
+		if(i == divs.length)
+		{
+			document.getElementById('available').appendChild(div);
+			break;
+		}
+		if(Number(divs[i].getAttribute('points')) < points)
+		{
+			document.getElementById('available').insertBefore(div, divs[i]);
+			break;
+		}
+		
+		i++;
+	}
+
+	document.getElementById('available-count').innerHTML = document.getElementById('available').getElementsByClassName("memberRow").length;
+}
+
+function removeMemberFromAvailable(memberId)
+{
+	var div = document.getElementById('available-' + memberId);
+	div.parentNode.removeChild(div);
+
+	document.getElementById('available-count').innerHTML = document.getElementById('available').getElementsByClassName("memberRow").length;
+}
+
+
+
+function addMemberToGoing(member_id)
+{
+	var memberObj = memberLookup[member_id];
+
+	var points = (memberLookup[member_id] === undefined ? 0 : memberObj.points);
+	
+	var div = document.createElement('div');
+	div.id = "going-" + memberObj.id;
+	div.className = "memberRow";
+
+	div.setAttribute('points', points);
+
+	var instrument = enumLookup.instruments[signupStatus[member_id].instrument_id];
+
+	div.innerHTML = 
+		`<span class="points">${points}</span>
+		<span class='name'>${memberObj.first_name} ${memberObj.last_name}</span>
+		<span class="actions">
+			<span icon="close" title="Remove"></span>
+		</span>
+		`;
+	var actionSpans = div.getElementsByClassName('actions')[0].getElementsByTagName('span');
+
+	actionSpans[0].onclick = function(e)
+	{
+		removeMemberFromGoing(member_id);
+		addMemberToAvailable(member_id);
+
+		signupStatus[member_id].status -= 2;
+		updateAttendee(member_id);
+	}
+
+	
+
+	var instrumentDivId="instrument-" + signupStatus[member_id].instrument_id;
+	
+	document.getElementById(instrumentDivId).appendChild(div);
+
+	document.getElementById(instrumentDivId+"-count").innerHTML = document.getElementById(instrumentDivId).getElementsByClassName("memberRow").length;
+	document.getElementById('going-count').innerHTML = document.getElementById('going').getElementsByClassName("memberRow").length;
+}
+
+function removeMemberFromGoing(memberId)
+{
+	var div = document.getElementById('going-' + memberId);
+	div.parentNode.removeChild(div);
+
+	// update counts
+	var instrumentDivId="instrument-" + signupStatus[memberId].instrument_id;
+	document.getElementById(instrumentDivId+"-count").innerHTML = document.getElementById(instrumentDivId).getElementsByClassName("memberRow").length;
+	document.getElementById('going-count').innerHTML = document.getElementById('going').getElementsByClassName("memberRow").length;
+}
 
 
 // updates points boxes when default points changes
@@ -263,9 +527,30 @@ function updateEvent()
 	setFeedbackBox();
 }
 
+// Sends the updated info abount an attendee to the server.
+function updateAttendee(memberId)
+{
+	var data = signupStatus[memberId];
+	if(data === undefined)
+	{
+		data = {
+			delete: true,
+			member_id: memberId,
+			event_id: event_id
+		}
+	}
+	
+	data.token = document.getElementById('token').value;
+
+	if(attendeeOutboxes[memberId] == undefined)
+		attendeeOutboxes[memberId] = new Outbox("../api/updateEventAttendance", setFeedbackBox, setFeedbackBoxFail);
+
+	attendeeOutboxes[memberId].send(data);
+	setFeedbackBox();
+}
+
 function setFeedbackBox()
 {
-	console.log("update");
 	var box = document.getElementById('feedback-box');
 	
 	if(box.getAttribute('icon') != "error")
@@ -281,6 +566,19 @@ function setFeedbackBox()
 	}
 	
 }
+
+function togglePlan()
+{
+	if(isPlanningView)
+	{
+		renderPointsView();
+	}
+	else
+	{
+		renderPlanningView();
+	}
+}
+
 
 function setFeedbackBoxFail()
 {
@@ -314,10 +612,39 @@ function deleteEvent()
 }
 
 //when radio button is switched, load the correct members to search from.
-document.getElementById('allMembersTrue').onchange = function(e)
+document.getElementById('allMembersTrue').onchange = async function(e)
 {
-	loadJSON("../api/getMembers?season=all", loadMembers);
+	await dataloadAllMembers();
+	searchbarLoadMembers(false);
+	console.log("loading all members")
+
 }
+
+document.getElementById('allMembersFalse').onchange = function(e)
+{
+	console.log("loading season members")
+	searchbarLoadMembers(true)
+}
+
+
+document.getElementById('instrument-filter').onchange = function(e)
+{
+	var availableMembers = document.getElementById('available').getElementsByClassName('memberRow');
+
+	for(var i=0; i < availableMembers.length; i++)
+	{
+		if(this.value == "-1" || this.value == availableMembers[i].getAttribute('instrument'))
+		{
+			availableMembers[i].style.display = "block";
+		}
+		else
+		{
+			availableMembers[i].style.display = "none";
+		}
+	}
+}
+
+
 
 /* SEARCHBOX Events */
 
@@ -325,7 +652,6 @@ document.getElementById('allMembersTrue').onchange = function(e)
 	 * Searches the list of members for a match
 	 * PRECONDITION: memberSearch and memberLookup structures initialized.
 	 */
-
 
 	function displaySearchResults()
 	{
@@ -381,7 +707,7 @@ document.getElementById('allMembersTrue').onchange = function(e)
 						if(e.button == 0) addMemberToEvent(i);
 					}
 
-					if (eventAttendees.has(i))
+					if (signupStatus[i] != undefined && (signupStatus[i].status == 2 || isPlanningView))
 					{
 						var label = document.createElement('span');
 						label.innerHTML = "Already added";
@@ -436,24 +762,57 @@ document.getElementById('allMembersTrue').onchange = function(e)
 		}
 	}
 
+	/**
+	 * Adds a member from the search control to the correct spot in the view.
+	 */
 	function addMemberToEvent(memberId)
 	{
-		if(!eventAttendees.has(memberId))
+		if(isPlanningView)
 		{
-			//alert('adding member ' + memberId);
-			var data = {};
-			data.token = document.getElementById('token').value;
-			data.event_id = Number(event_id);
-			data.member_id = memberId;
-			data.note = 0
+			if(signupStatus[memberId] == undefined )
+			{
+				signupStatus[memberId] = {
+					event_id: Number(event_id),
+					member_id: memberId, 
+					instrument_id: memberLookup[memberId].instrument_id,
+					status: 0,
+					points: null,
+					note: 0
+				}
 
-			sendJSON("../api/updateEventAttendance", JSON.stringify(data), setFeedbackBox, setFeedbackBoxFail);
-
-			addAttendeeToHTML(data);
-
-			var parent = document.getElementById('atendees-container');
-			parent.scrollTop = parent.scrollHeight;
+				updateAttendee(memberId);
+				addMemberToAvailable(memberId);
+			}
 		}
+		else
+		{
+			if(signupStatus[memberId] == undefined || signupStatus[memberId].status < 2)
+			{
+				//alert('adding member ' + memberId);
+
+				if(signupStatus[memberId] === undefined )
+				{
+					signupStatus[memberId] = {
+						event_id: Number(event_id),
+						member_id: memberId, 
+						instrument_id: memberLookup[memberId].instrument_id,
+						status: 0,
+						points: null,
+						note: 0
+					}
+				}
+
+				signupStatus[memberId].status += 2;
+
+				updateAttendee(memberId);
+				addAttendeeToHTML(memberId);
+
+				//var parent = document.getElementById('atendees-container');
+				//parent.scrollTop = parent.scrollHeight;
+			}
+		}
+
+		
 
 		var searchbox = document.getElementById('searchbox');
 		searchbox.value = "";

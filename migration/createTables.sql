@@ -28,8 +28,15 @@ CREATE TABLE Event_Attendance (
 	member_id int,
 	event_id int,
 	points int NULL, -- If null, user will gain the default points for the event
-	note int
+	note int,
+	instrument_id tinyint NULL, -- what they played
+	status tinyint
+	-- 1 self signed signed up
+	-- 2 manager sign up
+	-- 3 self signed up going
+	-- 4 going
 );
+
 
 CREATE INDEX memberIndex ON Event_Attendance (member_id);
 CREATE INDEX eventIndex ON Event_Attendance (event_id);
@@ -53,6 +60,7 @@ CREATE TABLE Events (
 	event_type_id int,
 	date date,
 	default_points int,
+	open_signup BOOLEAN,
 	description varchar(255)
 );
 

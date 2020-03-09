@@ -8,7 +8,7 @@ exports.run = function(req, res)
 	if (req.query.id == undefined || isNaN(Number(req.query.id)))
 	{
 		res.writeHead(400);
-		res.send("Must specify an event ID, e.g. getEvents?id=42");
+		res.end("Must specify an event ID, e.g. getEvents?id=42");
 		return;
 	}
 
@@ -26,12 +26,15 @@ exports.run = function(req, res)
 				if (err) 
 					throw err;
 
-				data.attendees = [];
+				data.attendees = {};
 
 				rows.forEach((row) => {
-					data.attendees.push(row);
-				});
+			
+					if(row.status == undefined || row.status == null)
+						row.status = 2;
 
+					data.attendees[row.member_id] = row;
+				});
 
 				res.setHeader("Content-Type", "text/json");
 				res.writeHead(200);

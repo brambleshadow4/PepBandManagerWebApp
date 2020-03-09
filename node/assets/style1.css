@@ -53,6 +53,8 @@ body{
 		overflow: hidden;
 		height: 100%;
 
+		box-sizing: border-box;
+
 		flex-direction: column;
 	}
 
@@ -70,6 +72,11 @@ body{
 .left-pad
 {
 	padding-left: 12pt;
+}
+
+.right-pad
+{
+	padding-right: 12pt;
 }
 
 .bottom-pad
@@ -104,6 +111,17 @@ label {cursor: pointer;}
 	}
 	span[icon="none"]
 	{
+	}
+
+	span[icon="add"]
+	{
+		background-image: url('../assets/icons/md-add.svg');
+	}
+
+	span[icon="edit"]
+	{
+		background-image: url('../assets/icons/pencil-edit-button.svg');
+		background-size: 25px 25px;
 	}
 
 	span[icon="loading"]

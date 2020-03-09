@@ -28,6 +28,10 @@ h2
 	flex-shrink: 1;
 }
 
+.full-iframe #events-container
+{
+	display: none;
+}
 
 button
 {
@@ -119,6 +123,19 @@ a.event:nth-child(even)
 a.event:hover
 {
 	background-color: #FFC0C0;
+}
+
+#event-list
+{
+	display: block;
+}
+
+.full
+{
+	position: absolute;
+	left: 0px;
+
+	background-color: white;
 }
 
 #selected

@@ -31,15 +31,15 @@ exports.run = function(req, res)
 		(
 			SELECT COALESCE(SUM(COALESCE(att.points, e.default_points)),0) 
 			FROM event_attendance att INNER JOIN events e ON att.event_id = e.id 
-			WHERE member_id = m.id AND e.season_id = ?
+			WHERE member_id = m.id AND e.season_id = ? AND e.date < date('now') AND att.status > 1
 		)
 		AS points
 		FROM members m
 		WHERE m.id IN (
 			SELECT att.member_id 
 			FROM event_attendance att INNER JOIN events e on att.event_id = e.id
-			WHERE e.season_id = ? )
-
+			WHERE e.season_id = ? 
+		)
 		ORDER BY m.instrument_id ASC, points DESC`;
 
 

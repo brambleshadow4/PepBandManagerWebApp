@@ -1,4 +1,5 @@
 import pickle
+
 f = open("PepBandDatabase.pickle","rb")
 databaseData = pickle.load(f)
 
@@ -24,7 +25,7 @@ with open('members_import.sql', 'w', newline='\r\n') as f:
 
 		
 with open('events_import.sql', 'w', newline='\r\n') as f:
-	s = "INSERT INTO Events (id, name, season_id, event_type_id, date, default_points, description) VALUES ({0}, '{1}', {2}, {3}, '{4}', {5}, '{6}');\n"
+	s = "INSERT INTO Events (id, name, season_id, event_type_id, date, default_points, description, open_signup) VALUES ({0}, '{1}', {2}, {3}, '{4}', {5}, '{6}', 0);\n"
 
 	for event in databaseData["events"]:
 
@@ -38,7 +39,7 @@ with open('events_import.sql', 'w', newline='\r\n') as f:
 with open('event_attendance_import.sql','w', newline='\r\n') as f:
 
 
-	s = "INSERT INTO Event_Attendance (member_id, event_id, points, note) VALUES ({0}, {1}, {2}, {3});\n"	
+	s = "INSERT INTO Event_Attendance (member_id, event_id, points, note, status) VALUES ({0}, {1}, {2}, {3}, 2);\n"	
 
 	for item in databaseData["event_attendance"]:
 		f.write(s.format(item["member_id"], item["event_id"], item["points"], item["note"]))
@@ -62,8 +63,11 @@ with open('event_types_import.sql',"w", newline="\r\n") as f:
 
 with open('seasons_import.sql',"w", newline="\r\n") as f:
 
-	s = "INSERT INTO seasons (id, start_date, name) VALUES ({0}, '{1}', '{2}');\n"
+	s = "INSERT INTO Seasons (id, start_date, name) VALUES ({0}, '{1}', '{2}');\n"
 
 	for season in databaseData["seasons"]:
 		f.write(s.format(season["id"], makeSafe(season["start_date"]), makeSafe(season["name"])))
 	
+
+
+

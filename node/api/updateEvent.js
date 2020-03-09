@@ -5,7 +5,6 @@ exports.run = function(req, res)
 	var sql;
 	var season = 0;
 
-
 	do
 	{
 		if(!req.body)
@@ -31,7 +30,6 @@ exports.run = function(req, res)
 					res.setHeader("Content-Type", "text/json");
 					res.writeHead(200);
 					res.end();
-
 				});
 			});
 
@@ -91,7 +89,6 @@ exports.run = function(req, res)
 
 	}
 	while(false);
-
 
 	res.writeHead(400);
 	res.end();

@@ -26,10 +26,6 @@ loadJSON("../api/getEvents?season=" + default_season, function(stuff)
 	loadEventsFromSeason(stuff);
 })
 
-
-
-
-
 function loadEventsFromSeason(eventsLocal)
 {
 	events = eventsLocal;
@@ -96,10 +92,6 @@ function loadEventsFromSeason(eventsLocal)
 		eventList.appendChild(heading);
 		eventList.appendChild(div);
 	}
-
-	var spacer = document.createElement('div');
-	spacer.style="padding-bottom: 12pt;";
-	eventList.appendChild(spacer);
 }
 
 function monthHeading(yyyy_mm)
@@ -207,20 +199,37 @@ function newEvent()
 
 function openPane()
 {
-	document.getElementById('iframe-container').style.display = "flex";
+	var iframeContainer = document.getElementById('iframe-container');
+	iframeContainer.style.display = "flex";
+	iframeContainer.classList.remove("full");
+	resizeHandler();
 }
 
 function closePane()
 {
 	document.getElementById('iframe-container').style.display = "none";
+	document.body.classList.remove("full-iframe");
 }
 
 
 window.addEventListener("message", function(e)
 {
+	var iframeContainer = document.getElementById('iframe-container');
 	if(e.data == "closeEvent")
 	{
 		closePane();
+	}
+	if(e.data == "openPlan")
+	{
+		//document.location = "plan";
+		document.body.classList.add("full-iframe");
+		resizeHandler();
+	}
+	if(e.data == "closePlan")
+	{
+		//document.location = "plan";
+		document.body.classList.remove("full-iframe");
+		resizeHandler();
 	}
 });
 
@@ -229,7 +238,7 @@ function resizeHandler(e)
 {
 	var iframeContainer = document.getElementById('iframe-container');
 
-	if(window.innerWidth < 800)
+	if(window.innerWidth < 800 || document.body.classList.contains("full-iframe"))
 	{
 		iframeContainer.style.width = "100vw";
 	}
