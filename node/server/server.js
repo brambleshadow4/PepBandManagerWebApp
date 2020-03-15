@@ -27,10 +27,11 @@ console.log(settings);
 
 app.use(require('cookie-parser')());
 app.use(require('express-session')({
-	secret: "idk what this does",
+	secret: settings['COOKIE_SECRET'] || "idk what this does",
 	unset: "destroy",
 	resave: false,
-	saveUninitialized: false
+	saveUninitialized: false,
+	secure: settings['HTTPS']
 }));
 
 const port = 80;
