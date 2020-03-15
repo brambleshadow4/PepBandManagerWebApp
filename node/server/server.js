@@ -26,9 +26,12 @@ for (var line of settingsList)
 console.log(settings);
 
 app.use(require('cookie-parser')());
-app.use(require('express-session')(
-	{secret: "idk what this does"}
-));
+app.use(require('express-session')({
+	secret: "idk what this does",
+	unset: "destroy",
+	resave: false,
+	saveUninitialized: false
+}));
 
 const port = 80;
 
