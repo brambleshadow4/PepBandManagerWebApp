@@ -38,10 +38,14 @@
 	display: block;
 }
 
-#results > .member:hover, #results > .new-member-span:hover
+
+#results > .member
 {
-	background-color: blue;
-	color: white;
+	cursor: pointer;
+}
+#results > #keyboard_selected
+{
+	background-color: #FFC0C0;
 	width: 2in;
 }
 
@@ -202,7 +206,7 @@ h4 {margin: 0px;}
 
 @media only screen and (max-width: 600px) 
 {
-	body, body table, input, select
+	/*body, body table, input, select
 	{
 		font-size: 8pt;
 	}
@@ -215,5 +219,5 @@ h4 {margin: 0px;}
 	#attendees input
 	{
 		max-width: .25in;
-	}
+	}*/
 }

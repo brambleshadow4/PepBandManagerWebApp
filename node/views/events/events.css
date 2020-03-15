@@ -145,7 +145,7 @@ a.event:hover
 
 @media only screen and (max-width: 1000px) 
 {
-	body, body table, select, button
+	/*body, body table, select, button
 	{
 		font-size: 8pt;
 	}
@@ -156,5 +156,5 @@ a.event:hover
 	    display: inline-block;
 	    width: 15px; 
 	    height: 15px;
-	}
+	}*/
 }

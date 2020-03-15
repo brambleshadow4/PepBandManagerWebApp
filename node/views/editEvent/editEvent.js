@@ -215,6 +215,7 @@ function renderPointsView()
 	document.getElementById('attendees').innerHTML = "";
 	document.getElementById('toggle-plan-button').innerHTML = "Planning View";
 
+	var sortedKeys = [];
 	for(var key in signupStatus)
 	{
 		if(signupStatus[key].instrument_id == null)
@@ -224,8 +225,20 @@ function renderPointsView()
 
 		if(signupStatus[key].status >= 2)
 		{
-			addAttendeeToHTML(key);
+			sortedKeys.push(key);
 		}
+	}
+
+	sortedKeys.sort(function(a,b){
+		var nameA = memberLookup[a].first_name + " " + memberLookup[a].last_name;
+		var nameB = memberLookup[b].first_name + " " + memberLookup[b].last_name;
+
+		return nameA.toLowerCase() > nameB.toLowerCase()
+	})
+
+	for(var i = 0; i<sortedKeys.length; i++)
+	{
+		addAttendeeToHTML(sortedKeys[i]);
 	}
 }
 
@@ -705,6 +718,13 @@ document.getElementById('instrument-filter').onchange = function(e)
 					span.className = "member"
 					span.innerHTML = record.first_name + " " + record.last_name;
 
+					span.onmouseenter = function(e)
+					{
+						var x = document.getElementById("keyboard_selected")
+						if(x) x.id = "";
+						this.id = "keyboard_selected";
+					}
+
 					span.onmousedown = function(e)
 					{
 						if(e.button == 0) addMemberToEvent(i);
@@ -729,11 +749,20 @@ document.getElementById('instrument-filter').onchange = function(e)
 				{
 					var span = document.createElement('span');
 					span.className = 'new-member-span';
-					span.innerHTML = "<em>Create a new member</em>";
+					span.innerHTML = "<em><a href='/members' target='_blank'>Create a new member<a></em>";
+					
 					span.onmousedown = function(e)
+					{	
+						this.getElementsByTagName('a')[0].click();
+					}
+
+					span.onmouseenter = function(e)
 					{
-						if(e.button == 0) document.getElementById('new-member').click();
-					}	
+						var x = document.getElementById("keyboard_selected")
+						if(x) x.id = "";
+						this.id = "keyboard_selected";
+					}
+
 					results.appendChild(span);
 				}
 				else
@@ -748,6 +777,14 @@ document.getElementById('instrument-filter').onchange = function(e)
 							document.getElementById('allMembersTrue').click();						
 						}
 					}	
+
+					span.onmouseenter = function(e)
+					{
+						var x = document.getElementById("keyboard_selected")
+						if(x) x.id = "";
+						this.id = "keyboard_selected";
+					}
+
 					results.appendChild(span);
 				}
 				
@@ -759,10 +796,65 @@ document.getElementById('instrument-filter').onchange = function(e)
 
 	document.getElementById('searchbox').onkeydown = function(e)
 	{
-		if(e.key == "Enter" && this.hasAttribute("selected_id"))
+		var selected = document.getElementById("keyboard_selected");
+
+		if(e.key == "Enter")
 		{
-			addMemberToEvent(Number(this.getAttribute("selected_id")));
+			if(this.hasAttribute("selected_id"))
+			{
+				addMemberToEvent(Number(this.getAttribute("selected_id")));
+			}
+			else if(selected)
+			{
+				selected.onmousedown({button: 0});
+			}
+			else if (document.getElementById('results').childNodes.length == 1)
+			{
+				console.log(document.getElementById('results').childNodes[0]);
+				document.getElementById('results').childNodes[0].onmousedown({button: 0});
+			}
+			
 		}
+
+		if(e.key == "ArrowDown")
+		{
+
+			if(selected == undefined)
+			{
+				document.getElementById('results').childNodes[0].id = "keyboard_selected";
+			}
+			else
+			{
+				var parent = selected.parentNode;
+
+				for(var i =0; i< parent.childNodes.length-1; i++)
+				{
+					if(parent.childNodes[i] == selected && parent.childNodes[i+1].classList.contains('member'))
+					{
+						selected.id= "";
+						parent.childNodes[i+1].id = "keyboard_selected";
+					}
+				}
+			}
+		}
+
+		if(e.key == "ArrowUp")
+		{
+			if(selected != undefined)
+			{
+				var parent = selected.parentNode;
+
+				for(var i =1; i< parent.childNodes.length; i++)
+				{
+					if(parent.childNodes[i] == selected)
+					{
+						selected.id= "";
+						parent.childNodes[i-1].id = "keyboard_selected";
+					}
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -810,8 +902,8 @@ document.getElementById('instrument-filter').onchange = function(e)
 				updateAttendee(memberId);
 				addAttendeeToHTML(memberId);
 
-				//var parent = document.getElementById('atendees-container');
-				//parent.scrollTop = parent.scrollHeight;
+				var parent = document.getElementById('atendees-container');
+				parent.scrollTop = parent.scrollHeight;
 			}
 		}
 
