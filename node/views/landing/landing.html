@@ -4,23 +4,24 @@
 		<meta name="google-signin-scope" content="profile email">
 	    <meta name="google-signin-client_id" content="428252312756-djr3h6is5c0s8lfr5ev3pr1567rnnjat.apps.googleusercontent.com">
 	    <script src="https://apis.google.com/js/platform.js" async defer></script>
+	    <link href="/landing/landing.css" type="text/css" rel="stylesheet" />
+	    <link href="/assets/style1.css" type="text/css" rel="stylesheet" />
 	</head>
 	<body>
-		<h1>Big Red Pep Band</h1>
-		<h2>Online Portal</h2>
 
-		<!--form action="login.php">
-			
-			<input type="submit" text="LOGIN"/>
-		</form-->
+		<div class='main'>
+			<span class='big'>Big Red Pep Band</span>
+			<span class='quote'></span>
+			<p>Online Portal</p>
 
+			<div class="g-signin2" data-onsuccess="onSignIn" data-theme="light"></div>
+
+			<form style="display: none;" action="login" method="POST">
+				<input type="hidden" name="token" id='token' />
+				<input type="submit" disabled id='submit' />
+			</form>
+		</div>
 		
-		<div class="g-signin2" data-onsuccess="onSignIn" data-theme="light"></div>
-
-		<form action="login" method="POST">
-			<input type="hidden" name="token" id='token' />
-			<input type="submit" disabled id='submit' />
-		</form>
 
 	    <script>
 	      function onSignIn(googleUser) {
@@ -37,6 +38,7 @@
 	        var id_token = googleUser.getAuthResponse().id_token;
 	        document.getElementById('token').value = id_token;
 	        document.getElementById('submit').removeAttribute("disabled");
+	        document.getElementById('submit').click();
 	        //console.log("ID Token: " + id_token);
 	      }
 	    </script>

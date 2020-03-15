@@ -3,4 +3,26 @@
 	<a href="members">Members</a>
 	<a href="points">Points</a>
 	<div display="More"></div>
+	<a class='float-right' onclick="logOut()">Log Out</a>
+	<script>
+		function logOut()
+		{
+			try
+			{
+				var auth2 = gapi.auth2.getAuthInstance();
+				auth2.signOut().then(returnToLoginPage);
+			}
+			catch(e)
+			{
+				returnToLoginPage();
+			}
+		}
+
+		function returnToLoginPage()
+		{
+			window.location.href="logout"
+		}
+
+
+	</script>
 </nav>

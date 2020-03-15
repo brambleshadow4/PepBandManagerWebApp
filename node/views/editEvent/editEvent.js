@@ -12,6 +12,9 @@ var signupStatus = {};
 var season = -1; 
 var event_id = location.search.substring(1);
 
+
+document.getElementById('printout').setAttribute('href',"editEvent/printout.pdf?id=" + event_id);
+
 var eventOutbox = new Outbox("../api/updateEvent", setFeedbackBox, setFeedbackBoxFail);
 var attendeeOutboxes = {};
 

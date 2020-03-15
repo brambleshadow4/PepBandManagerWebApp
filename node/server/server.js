@@ -35,14 +35,17 @@ const port = 80;
 yep("/components/memberSearchBox.js");
 yep("/components/memberSearchBox.css");
 
-// login
+// login & logout
 
 	app.post('/login', bodyParser.urlencoded({extended: true}), function (req, res) {	
 		req.settings = settings;
 		require('./auth.js').run(req,res);
 	});
-	
 
+	app.get('/logout', function (req, res) {	
+		delete req.session;
+		res.redirect("/");
+	});
 
 // Always allow access to the assets folder; no login necessary.
 app.get('/assets/*', function (req, res) {
@@ -64,9 +67,15 @@ app.get('/assets/*', function (req, res) {
 		sendFileWithCRSF('./views/editEvent/editEvent.html', req, res);
 	});
 
+	app.get('/editEvent/printout.pdf', checkAdmin, function (req, res) {
+		require('../views/editEvent/createEventList.js').run(req,res);
+	});
+
 	app.get('/editEvent/*', checkAdmin, function (req, res) {
 		sendIfExists("/views" + req.url, res);
 	})
+
+	
 
 // members
 	app.get('/members', checkAdmin, function (req, res) {
@@ -123,6 +132,10 @@ app.get('/assets/*', function (req, res) {
 		{
 			res.sendFile('/views/landing/landingDebug.html', {root:"./"});
 		}
+	})
+
+	app.get('/landing/*', function (req, res) {
+		sendIfExists("/views" + req.url, res);
 	})
 
 // Get Apis

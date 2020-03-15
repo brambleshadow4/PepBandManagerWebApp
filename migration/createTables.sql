@@ -24,7 +24,6 @@ CREATE TABLE Members (
 
 CREATE TABLE Event_Attendance (
 
-	id INTEGER PRIMARY KEY AUTOINCREMENT, 
 	member_id int,
 	event_id int,
 	points int NULL, -- If null, user will gain the default points for the event

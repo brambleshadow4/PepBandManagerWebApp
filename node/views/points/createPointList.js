@@ -142,8 +142,6 @@ exports.run = function(req, res)
 
 			doc.end();
 			db.close();
-
-
 		});
 	});
 	// close the database connection

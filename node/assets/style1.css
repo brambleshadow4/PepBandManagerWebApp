@@ -30,17 +30,24 @@ body{
 		
 	}
 
-	nav a
+	nav a, nav div
 	{
 		padding: 8pt;
 		text-decoration: none;
 		color: white;
 		display: inline-block;
+		cursor: pointer;
 	}
 
 	nav a:hover
 	{
 		background-color: #cc0000; /*#b30000;*/
+	}
+
+	nav .float-right
+	{
+		float: right;
+		margin-right: 8pt;
 	}
 
 /* Layout */
@@ -121,6 +128,12 @@ label {cursor: pointer;}
 	span[icon="edit"]
 	{
 		background-image: url('../assets/icons/pencil-edit-button.svg');
+		background-size: 25px 25px;
+	}
+
+	span[icon="pdf"]
+	{
+		background-image: url('../assets/icons/pdf-file.svg');
 		background-size: 25px 25px;
 	}
 
