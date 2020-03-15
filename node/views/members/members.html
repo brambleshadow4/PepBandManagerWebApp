@@ -25,23 +25,9 @@
 	<script>
 		function logOut()
 		{
-			try
-			{
-				var auth2 = gapi.auth2.getAuthInstance();
-				auth2.signOut().then(returnToLoginPage);
-			}
-			catch(e)
-			{
-				returnToLoginPage();
-			}
-		}
-
-		function returnToLoginPage()
-		{
+			sessionStorage["logout"] = "1";
 			window.location.href="logout"
 		}
-
-
 	</script>
 </nav>
 		<div id='cols' class='column frame left-pad'>
