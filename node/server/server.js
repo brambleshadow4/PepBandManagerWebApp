@@ -39,6 +39,11 @@ const port = 80;
 yep("/components/memberSearchBox.js");
 yep("/components/memberSearchBox.css");
 
+
+app.get('/pepband.db', checkAdmin, function (req, res) {
+	sendIfExists("/db/pepband.db", res);
+})
+
 // login & logout
 
 	app.post('/login', bodyParser.urlencoded({extended: true}), function (req, res) {	

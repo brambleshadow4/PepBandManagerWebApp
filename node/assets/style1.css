@@ -30,19 +30,56 @@ body{
 		
 	}
 
-	nav a, nav div
+	nav a
 	{
 		padding: 8pt;
 		text-decoration: none;
 		color: white;
 		display: inline-block;
 		cursor: pointer;
+
+		vertical-align: middle;
+		fill: white;
 	}
 
-	nav a:hover
+	nav a span {vertical-align: middle;}
+
+
+	.expand-menu
+	{
+		padding: 0px;
+		display: inline-block;
+		position: relative;
+	}
+
+	.expand-menu:hover .expand-menu-list
+	{
+		display: block;
+	}
+
+	.expand-menu-list
+	{
+
+		margin: 0px;
+		padding: 0px;
+		position: absolute;
+		z-index: 20;
+		background-color: red;
+		display: none;
+		width: 1.75in;
+	}
+
+	.expand-menu-list a
+	{
+		display: block;
+	}
+
+	nav a:hover, nav .expand-menu:hover
 	{
 		background-color: #cc0000; /*#b30000;*/
 	}
+
+
 
 	nav .float-right
 	{
@@ -143,6 +180,14 @@ label {cursor: pointer;}
 		animation-name: rotate;
 		animation-duration: 3s;
 		display:inline-block;
+	}
+
+	span[icon='menu-down']
+	{
+		background-image: url('../assets/icons/menu-expand-down.svg');
+		background-size: 22px 22px;
+		width: 22px;
+		height: 22px;
 	}
 
 	@keyframes rotate
