@@ -7,3 +7,16 @@
 {
 	margin-right: 8pt;
 }
+
+.points
+{
+	min-width: .4in;
+	display: inline-block;
+	text-align: right;
+	padding-right: 10px;
+}
+
+#lifetime-points
+{
+	display: block;
+}

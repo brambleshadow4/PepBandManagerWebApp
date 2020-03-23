@@ -249,7 +249,7 @@ function loadTable(memberIDs)
 	}
 }
 
-function editMember(member)
+async function editMember(member)
 {
 	document.getElementById('col2').style.display = "flex";
 
@@ -262,6 +262,14 @@ function editMember(member)
 	document.getElementById('netid').setAttribute('disabled', true);
 	document.getElementById('netid-button').innerHTML = "Edit";
 
+	// load point data
+	document.getElementById('lifetime-points').innerHTML = "";
+	document.getElementById('season-points').innerHTML = "";
+
+	var points = await loadJsonP("api/getMemberPoints?member=" + member.id);
+
+	document.getElementById('lifetime-points').innerHTML = points.lifetime_points;
+	document.getElementById('season-points').innerHTML = points.season_points;
 }
 
 document.getElementById('searchbox').oninput = function()

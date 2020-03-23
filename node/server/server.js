@@ -148,25 +148,34 @@ app.get('/assets/*', function (req, res) {
 	})
 
 // Get Apis
-app.get('/api/enums.js', function (req, res) {
-	require('../api/enums.js').run(req,res);
-})
+	app.get('/api/enums.js', function (req, res) {
+		require('../api/enums.js').run(req,res);
+	})
 
-app.get('/api/getEvents', checkAdmin, function (req, res) {
-	require('../api/getEvents.js').run(req,res);
-})
+	app.get('/api/getEvents', checkAdmin, function (req, res) {
+		require('../api/getEvents.js').run(req,res);
+	})
 
-app.get('/api/getEvent', checkAdmin, function (req, res) {
-	require('../api/getEvent.js').run(req,res);
-})
+	app.get('/api/getEvent', checkAdmin, function (req, res) {
+		require('../api/getEvent.js').run(req,res);
+	})
 
-app.get('/api/getMembers', checkAdmin, function (req, res) {
-	require('../api/getMembers.js').run(req,res);
-})
+	app.get('/api/getMembers', checkAdmin, function (req, res) {
+		require('../api/getMembers.js').run(req,res);
+	})
 
-app.get('/api/getSeasonPoints', checkAdmin, function (req, res) {
-	require('../api/getSeasonPoints.js').run(req,res);
-})
+	app.get('/api/getSeasonPoints', checkAdmin, function (req, res) {
+		require('../api/getSeasonPoints.js').run(req,res);
+	})
+
+	app.get('/api/getMemberPoints', checkAdmin, function (req, res) {
+		require('../api/getMemberPoints.js').run(req,res);
+	})
+
+	app.get('/api/getLifetimePoints', checkAdmin, function (req, res) {
+		require('../api/getLifetimePoints.js').run(req,res);
+	})
+
 
 // Post APIs
 app.post('/api/updateEventAttendance', checkAdmin, bufferPostData, function (req, res) {

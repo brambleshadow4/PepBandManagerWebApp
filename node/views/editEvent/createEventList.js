@@ -6,7 +6,6 @@ exports.run = async function(req, res)
 
 	function query(sql, args)
 	{
-
 		return new Promise(function(success, fail)
 		{
 			db.all(sql, args, (err, rows) => 
