@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>BRPB: Points</title>
+		<script src="assets/api.js"></script>
+		<script src="assets/enumHelper.js"></script>
+		<script src="assets/sets.js"></script>
+		<script src="api/enums.js"></script>
+
+		<link href="assets/style1.css" type="text/css" rel="stylesheet" />
+		<link href="tableEdit/tableEdit.css" type="text/css" rel="stylesheet" />
+	</head>
+	<body>
+		{{nav}}
+		<input type="hidden" id='crsf' value="{{crsf}}"/>
+		<div class='scroll frame left-pad right-pad'>
+			
+			<h2 id='title-heading'></h2>
+			<p id='notes'></p>
+			<div id='editable-table'></div>
+
+			<div>
+				<div class='level'>
+					<button id='save-button' onclick="saveTable()">Save Changes</button>
+					<span id='loading'></span>
+				</div>
+				<div id='success'>
+					<div>
+						<span icon="success"></span>
+						<span>Data saved successfully</span>
+					</div>
+				</div>
+				<div id='errors'>
+					<div>
+						<span icon="error"></span>
+						<span>Data failed to save</span>
+					</div>
+					<div id='errors-text'></div>
+				</div>
+			</div>
+
+		</div>
+
+		<script src="tableEdit/tableEdit.js"></script>
+	</body>
+</html>

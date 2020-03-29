@@ -109,10 +109,13 @@ app.get('/assets/*', function (req, res) {
 		res.sendFile('./views/join/join.html', {root:"./"});
 	});
 
+
+
 // profile
 	app.get('/profile', function (req, res) {
 		res.sendFile('./views/profile/profile.html', {root:"./"});
 	});
+
 
 // points
 	app.get('/points', checkAdmin, function (req, res) {
@@ -145,6 +148,16 @@ app.get('/assets/*', function (req, res) {
 
 	app.get('/landing/*', function (req, res) {
 		sendIfExists("/views" + req.url, res);
+	})
+
+// Seasons
+	app.get('/seasons', checkAdmin, function (req, res) {
+		console.log("seasons");
+		sendFileWithCRSF('./views/tableEdit/tableEdit.html', req, res);
+	});
+
+	app.get('/tableEdit/*', checkAdmin, function (req, res) {
+		sendIfExists("./views" + req.url, res);
 	})
 
 // Get Apis
@@ -192,6 +205,10 @@ app.post('/api/updateEvent', bufferPostData, checkAdmin, function (req, res) {
 
 app.post('/api/updateMember', checkAdmin, bufferPostData, function (req, res) {
 	require('../api/updateMember.js').run(req,res);
+})
+
+app.post('/api/updateTable', checkAdmin, bufferPostData, function (req, res) {
+	require('../api/updateTable.js').run(req,res);
 })
 
 

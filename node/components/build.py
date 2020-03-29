@@ -17,12 +17,17 @@ Out(
 	Fill(Template("views/points/points.template.html"), t1)
 )
 
+Out(
+	"views/tableEdit/tableEdit.html", 
+	Fill(Template("views/tableEdit/tableEdit.template.html"), t1)
+)
+
 searchBox = Template("components/memberSearchBox.template.html")
 
-Out(
+'''Out(
 	"views/plan/plan.html", 
 	Fill(
 		Fill(Template("views/plan/plan.template.html"), t1),
 		Bind("searchBox", Fill(searchBox, Bind("id", "e1")))
 	)
-)
+)'''

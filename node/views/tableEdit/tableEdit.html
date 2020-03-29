@@ -8,7 +8,7 @@
 		<script src="api/enums.js"></script>
 
 		<link href="assets/style1.css" type="text/css" rel="stylesheet" />
-		<link href="points/points.css" type="text/css" rel="stylesheet" />
+		<link href="tableEdit/tableEdit.css" type="text/css" rel="stylesheet" />
 	</head>
 	<body>
 		<nav>
@@ -35,22 +35,35 @@
 		}
 	</script>
 </nav>
-
-		<div id='cols' class='column frame left-pad'>
+		<input type="hidden" id='crsf' value="{{crsf}}"/>
+		<div class='scroll frame left-pad right-pad'>
 			
-			<div id='col1' class='frame'>
+			<h2 id='title-heading'></h2>
+			<p id='notes'></p>
+			<div id='editable-table'></div>
 
-				<h2>Points</h2>
-				<div class='scroll frame' id='seasons'></div>
-
+			<div>
+				<div class='level'>
+					<button id='save-button' onclick="saveTable()">Save Changes</button>
+					<span id='loading'></span>
+				</div>
+				<div id='success'>
+					<div>
+						<span icon="success"></span>
+						<span>Data saved successfully</span>
+					</div>
+				</div>
+				<div id='errors'>
+					<div>
+						<span icon="error"></span>
+						<span>Data failed to save</span>
+					</div>
+					<div id='errors-text'></div>
+				</div>
 			</div>
 
-			<div id='col2' class='left-pad frame'>
-				<h2>Lifetime Points</h2>
-				<div class='scroll frame' id='lifetime-points'></div>
-			</div>
 		</div>
 
-		<script src="points/points.js"></script>
+		<script src="tableEdit/tableEdit.js"></script>
 	</body>
 </html>

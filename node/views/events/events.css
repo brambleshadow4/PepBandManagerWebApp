@@ -106,8 +106,6 @@ a.event
 	text-decoration: none;
 	display: block;
 	max-width: 6in;
-
-
 }
 
 a.event:nth-child(odd)

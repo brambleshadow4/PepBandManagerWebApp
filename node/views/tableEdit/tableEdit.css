@@ -1,0 +1,89 @@
+table, tr, th, td
+{
+	border-collapse: collapse;
+	
+}
+
+td, th
+{
+	background-color: #AAAAAA;
+	border: solid 1px black;
+}
+
+td[contenteditable=true],td.close-button
+{
+	background-color: white;
+}
+
+td
+{
+	padding: 5px;
+	vertical-align: middle;
+}
+
+td.close-button
+{
+	border: none;
+}
+
+td.close-button span
+{
+	cursor: pointer;
+	vertical-align: middle;
+}
+
+td.error
+{
+	background-color: #FFC0C0;
+}
+
+#lastRow td
+{
+	background-color: white;
+	border: none;
+	text-align: right;
+}
+
+
+#success, #errors {display: none;}
+
+.level button, .level span
+{
+	vertical-align: middle;
+}
+
+.level
+{
+	margin: 10px 0px;
+}
+
+#save-button
+{
+	height: 25px;
+}
+#save-button
+{
+	height: 25px;
+	vertical-align: middle;
+}
+
+#success {
+	border: solid 1px green;
+	background-color:  #b3ffb3;
+	padding: 8px;
+}
+#success span {vertical-align:  middle}
+
+#errors
+{
+	border: solid 1px red;
+	background-color: #ffb3b3;
+	padding: 8px;
+}
+
+#errors span {vertical-align:  middle}
+
+#notes
+{
+	margin-top: 0px;
+}
