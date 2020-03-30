@@ -152,7 +152,10 @@ app.get('/assets/*', function (req, res) {
 
 // Seasons
 	app.get('/seasons', checkAdmin, function (req, res) {
-		console.log("seasons");
+		sendFileWithCRSF('./views/tableEdit/tableEdit.html', req, res);
+	});
+
+	app.get('/access', checkAdmin, function (req, res) {
 		sendFileWithCRSF('./views/tableEdit/tableEdit.html', req, res);
 	});
 
@@ -187,6 +190,10 @@ app.get('/assets/*', function (req, res) {
 
 	app.get('/api/getLifetimePoints', checkAdmin, function (req, res) {
 		require('../api/getLifetimePoints.js').run(req,res);
+	})
+
+	app.get('/api/getAdmins', checkAdmin, function (req, res) {
+		require('../api/getAdmins.js').run(req,res);
 	})
 
 

@@ -1,8 +1,11 @@
 
+async function load()
+{
+	var data = await getTableData();
+	document.getElementById('title-heading').innerHTML = data.pageHeading;
+}
 
-document.getElementById('title-heading').innerHTML = getTableData().pageHeading;
-
-
+load();
 
 var uniqueRowId = 0;
 var largestId = -1;
@@ -53,7 +56,7 @@ function createRow(keys, data)
 		}
 
 
-		td.innerHTML = data[key] || data[j];
+		td.innerHTML = (data[key] === undefined ? data[j] : data[key]);
 		
 		row.appendChild(td);
 	}
@@ -78,13 +81,13 @@ function createRow(keys, data)
 	return row;
 }
 
-function createTable()
+async function createTable()
 {
 	var table = document.createElement('table');
 	var tbody = document.createElement('tbody');
 
 	table.appendChild(tbody);
-	var tableData = getTableData();
+	var tableData = await getTableData();
 	var keys = tableData.keys;
 	var items = tableData.items;
 	
@@ -138,7 +141,7 @@ function createTable()
 
 }
 
-function getTableData()
+async function getTableData()
 {
 	if(window.location.toString().indexOf("seasons") >=0)
 	{
@@ -150,14 +153,28 @@ function getTableData()
 			items: enums.seasons,
 			notes: "The current season is the one with the highest id number, and the previous season is that id number minus one.<br><br>"+
 				"You will not be able to successfully delete a season if it has any events.",
-		}
+		};
 	}
-
-	
+	else if(window.location.toString().indexOf("access") >=0)
+	{
+		var adminData = await loadJsonP("api/getAdmins");
+		return {
+			table: "Admins",
+			keys: ["netid", "role"],
+			pageHeading: "Access",
+			headerRow : "<tr><th>NetID or Gmail</th><th>Role No.</th>",
+			items: adminData ,
+			notes: `These settings determine who has the ability to modify the database and what permissions they have, so be careful.
+			You can give/revoke accesss by assigning the netid/gmail the corresponding role number.<br><br>
+			Possible roles:<br>
+			1 - Full administrator access<br><br>
+			If you change your own settings, they will apply when you log back in.`,
+		}
+	}	
 }
 
 
-function saveTable()
+async function saveTable()
 {
 	document.getElementById('save-button').disabled = "true";
 	document.getElementById('loading').setAttribute('icon',"loading");
@@ -166,7 +183,7 @@ function saveTable()
 
 
 	var rows = document.getElementsByTagName('tr');
-	var tableData = getTableData();
+	var tableData = await getTableData();
 	var keys = tableData.keys;
 
 	var data = {

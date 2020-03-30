@@ -74,6 +74,15 @@ exports.run = async function(req, res)
 				];
 				itemName = "season";
 				break;
+			case "Admins":
+				schema = {
+					"netid": checkString,
+					"role": checkInt,
+				}
+				selector = "netid";
+				deleteValidation = [];
+				itemName = "admin";
+				break;
 			case undefined:
 			default: 
 				break main;
