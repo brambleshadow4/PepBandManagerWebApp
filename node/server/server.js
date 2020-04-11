@@ -163,6 +163,10 @@ app.get('/assets/*', function (req, res) {
 		sendFileWithCRSF('./views/tableEdit/tableEdit.html', req, res);
 	});
 
+	app.get('/eventTypes', checkAdmin, function (req, res) {
+		sendFileWithCRSF('./views/tableEdit/tableEdit.html', req, res);
+	});
+
 	app.get('/tableEdit/*', checkAdmin, function (req, res) {
 		sendIfExists("./views" + req.url, res);
 	})

@@ -95,6 +95,17 @@ exports.run = async function(req, res)
 				];
 				itemName = "instrument";
 				break;
+			case "Event_Types":
+				schema = {
+					"id": checkInt,
+					"name": checkString,
+				}
+				selector = "id";
+				deleteValidation = [
+					"SELECT * FROM Events WHERE event_type_id = ?"
+				];
+				itemName = "event type";
+				break;
 			case undefined:
 			default: 
 				break main;

@@ -182,6 +182,17 @@ async function getTableData()
 			notes: ``,
 		}
 	}	
+	else if(window.location.toString().indexOf("eventTypes") >=0)
+	{
+		return {
+			table: "Event_Types",
+			keys: ["id", "name"],
+			pageHeading: "Event Types",
+			headerRow : "<tr><th>ID</th><th>Name</th>",
+			items: enums.event_types,
+			notes: ``,
+		}
+	}	
 }
 
 
