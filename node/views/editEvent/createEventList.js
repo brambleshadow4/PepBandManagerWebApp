@@ -36,7 +36,7 @@ exports.run = async function(req, res)
 		query("SELECT * FROM Event_Types", []), // 1
 		query("SELECT * FROM Events WHERE id=?", [eventId]), // 2
 		query(`
-			SELECT m.first_name, m.last_name, COALESCE(ea.instrument_id, m.instrument_id) as instrument_id
+			SELECT m.first_name, m.last_name, COALESCE(ea.instrument_id, m.instrument_id) as instrument_id, m.instrument_id as default_instrument_id
 			FROM Event_Attendance as ea INNER JOIN Members as m ON ea.member_id = m.id 
 			WHERE ea.event_id=? AND ea.status >= 2
 			ORDER BY instrument_id, m.first_name, m.last_name ASC`, [eventId]) // 3
@@ -134,7 +134,12 @@ exports.run = async function(req, res)
 			doc.fontSize(10);
 		}
 
-		doc.text(row.first_name + " " + row.last_name, colStops[col%colStops.length], height);
+		var asterisk = "";
+
+		if(row.instrument_id != row.default_instrument_id)
+			asterisk = "***";
+
+		doc.text(row.first_name + " " + row.last_name + asterisk, colStops[col%colStops.length], height);
 		height += yLineHeight;
 	}
 

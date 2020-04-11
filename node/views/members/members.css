@@ -67,6 +67,27 @@ tr.member-row:hover{
 }
 
 
+tr:nth-child(odd)
+{
+	background-color: #E0E0E0;
+}
+
+tr:nth-child(even)
+{
+	background-color: #F8F8F8;
+}
+
+tr, table, td
+{
+	border-collapse: collapse;
+}
+
+tr.heading
+{
+	background-color: #FFFFFF;
+}
+
+
 
 #delete-container
 {

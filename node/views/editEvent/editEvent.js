@@ -344,7 +344,8 @@ function addAttendeeToHTML(member_id)
 
 	//create the remove button
 	var span = document.createElement("span");
-	span.innerHTML = "&#10060;";
+	//span.innerHTML = "&#10060;";
+	span.setAttribute('icon',"close");
 	span.className = "remove-button";
 
 	//Delete attendee button code
@@ -377,7 +378,11 @@ function addMemberToAvailable(memberId)
 
 	div.setAttribute('points', points);
 
-	var instrument = enumLookup.instruments[memberObj.instrument_id];
+	
+	//var instrument = enumLookup.instruments[memberObj.instrument_id];
+
+	var iid = signupStatus[memberId].instrument_id;
+	var instrument = enumLookup.instruments[iid];
 
 	div.innerHTML = 
 		`<span class="points">${points}</span>
@@ -390,7 +395,12 @@ function addMemberToAvailable(memberId)
 		</span>
 		`;
 
-	div.setAttribute('instrument', memberObj.instrument_id);
+	if (iid != memberObj.instrument_id)
+	{
+		div.classList.add("flag");
+	}
+
+	div.setAttribute('instrument', iid);
 
 	var actionSpans = div.getElementsByClassName('actions')[0].getElementsByTagName('span');
 
@@ -399,6 +409,11 @@ function addMemberToAvailable(memberId)
 		removeMemberFromAvailable(memberId);
 		delete signupStatus[memberId];
 		updateAttendee(memberId);
+	}
+
+	actionSpans[1].onclick = function(e)
+	{
+		editInstrumentPopup(memberId);
 	}
 
 	actionSpans[2].onclick = function(e)
@@ -457,6 +472,11 @@ function addMemberToGoing(member_id)
 
 	var instrument = enumLookup.instruments[signupStatus[member_id].instrument_id];
 
+	if (signupStatus[member_id].instrument_id != memberObj.instrument_id)
+	{
+		div.classList.add("flag");
+	}
+
 	div.innerHTML = 
 		`<span class="points">${points}</span>
 		<span class='name'>${memberObj.first_name} ${memberObj.last_name}</span>
@@ -464,6 +484,9 @@ function addMemberToGoing(member_id)
 			<span icon="close" title="Remove"></span>
 		</span>
 		`;
+
+
+
 	var actionSpans = div.getElementsByClassName('actions')[0].getElementsByTagName('span');
 
 	actionSpans[0].onclick = function(e)
@@ -508,6 +531,7 @@ document.getElementById('default_points').onchange = function()
 
 	updateEvent();
 }
+
 
 
 function updateDate(obj)
@@ -594,6 +618,56 @@ function togglePlan()
 		renderPlanningView();
 	}
 }
+
+function editInstrumentPopup(memberId)
+{
+	var backdrop = document.createElement('div');
+	backdrop.id='popup'
+
+	document.body.appendChild(backdrop);
+
+	var form = document.createElement('div');
+
+	var member = memberLookup[memberId];
+
+	console.log(member);
+	var name = member.first_name + " " + member.last_name;
+
+	form.innerHTML = `<p>Change ${name}'s instrument</p>`;
+
+	var iid = member.instrument_id; //enumLookup.
+	var iname = enumLookup.instruments[iid]
+
+	form.innerHTML += `<div> Default: <button onclick="changePlannedInstrument(${memberId}, ${iid})">${iname}</button></div><br>`;
+
+	for(var i=0; i < enums.instruments.length; i++)
+	{
+		if(enums.instruments[i].id != member.instrument_id)
+		{
+			iid = enums.instruments[i].id;
+			iname = enums.instruments[i].name;
+			form.innerHTML += `<div><button onclick="changePlannedInstrument(${memberId}, ${iid})">${iname}</button></div>`;
+		}
+	}
+
+	form.id = 'popup-form';
+
+	backdrop.appendChild(form);
+}
+
+function changePlannedInstrument(memberId, instrumentId)
+{
+	var popup = document.getElementById('popup');
+	if(popup)
+		popup.parentNode.removeChild(popup);
+
+	signupStatus[memberId].instrument_id = instrumentId;
+	updateAttendee(memberId)
+
+	removeMemberFromAvailable(memberId);
+	addMemberToAvailable(memberId);
+}
+
 
 
 function setFeedbackBoxFail()
@@ -864,7 +938,7 @@ document.getElementById('instrument-filter').onchange = function(e)
 	{
 		if(isPlanningView)
 		{
-			if(signupStatus[memberId] == undefined )
+			if(signupStatus[memberId] == undefined)
 			{
 				signupStatus[memberId] = {
 					event_id: Number(event_id),
@@ -873,11 +947,11 @@ document.getElementById('instrument-filter').onchange = function(e)
 					status: 0,
 					points: null,
 					note: 0
-				}
-
-				updateAttendee(memberId);
-				addMemberToAvailable(memberId);
+				}		
 			}
+
+			updateAttendee(memberId);
+			addMemberToAvailable(memberId);
 		}
 		else
 		{
