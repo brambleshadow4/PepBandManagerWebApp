@@ -143,12 +143,6 @@ exports.run = async function(req, res)
 		height += yLineHeight;
 	}
 
-
-
-
-	
-
-
 	doc.end();
 	
 	// close the database connection

@@ -171,6 +171,17 @@ async function getTableData()
 			If you change your own settings, they will apply when you log back in.`,
 		}
 	}	
+	else if(window.location.toString().indexOf("instruments") >=0)
+	{
+		return {
+			table: "Instruments",
+			keys: ["id", "name"],
+			pageHeading: "Instrument Types",
+			headerRow : "<tr><th>ID</th><th>Name</th>",
+			items: enums.instruments,
+			notes: ``,
+		}
+	}	
 }
 
 

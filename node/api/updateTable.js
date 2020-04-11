@@ -83,6 +83,18 @@ exports.run = async function(req, res)
 				deleteValidation = [];
 				itemName = "admin";
 				break;
+			case "Instruments":
+				schema = {
+					"id": checkInt,
+					"name": checkString,
+				}
+				selector = "id";
+				deleteValidation = [
+					"SELECT * FROM Members WHERE instrument_id = ?",
+					"SELECT * FROM Event_Attendance WHERE instrument_id = ?"
+				];
+				itemName = "instrument";
+				break;
 			case undefined:
 			default: 
 				break main;
