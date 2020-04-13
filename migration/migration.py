@@ -41,11 +41,22 @@ for eventType in root.findall('./eventTypes/EventType'):
 	idlookup["eventTypes"][typeName] = idCounter
 	idCounter +=1
 
+idCounter = 0
+idlookup["locations"] = {}
+databaseData["locations"] = []
+for location in root.findall('./locations/Location'):
+
+	locationName = location.find('name').text
+	databaseData["locations"].append({"id":idCounter, "name": locationName})
+	idlookup["locations"][locationName] = idCounter
+	idCounter +=1
+
 	#print(typeName + " " + idNo)
 
 
 memberId = 0
 idlookup["members"] = {}
+
 databaseData["members"] = {}
 
 databaseData["events"] = []
@@ -74,8 +85,6 @@ for season in root.findall("./seasons/Season"):
 		"name": str(seasonYear) + " - " + str(seasonYear+1),
 		"start_date": seasonStartDate
 		})
-
-
 
 	path = "./seasons/Season["+str(seasonNo)+"]"
 	memberNo = 0
@@ -126,11 +135,13 @@ for season in root.findall("./seasons/Season"):
 		date = date[0:date.find(" ")]
 		defaultPoints = int(event.find("pointValue").text)
 		eventType = getReference(root, path2+"/eventType", event.find("eventType"), idlookup)
+		locationId = getReference(root, path2+"/location", event.find("location"), idlookup)
 
 		databaseData["events"].append({
 			"id": eventId,
 			"name": name,
 			"event_type_id": eventType,
+			"location_id": locationId,
 			"date": date,
 			"default_points": defaultPoints,
 			"season_id": seasonNo,

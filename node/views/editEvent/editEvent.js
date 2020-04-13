@@ -12,7 +12,6 @@ var signupStatus = {};
 var season = -1; 
 var event_id = location.search.substring(1);
 
-
 document.getElementById('printout').setAttribute('href',"editEvent/printout.pdf?id=" + event_id);
 
 var eventOutbox = new Outbox("../api/updateEvent", setFeedbackBox, setFeedbackBoxFail);
@@ -174,10 +173,15 @@ async function loadPage()
 
 	var select = makeEventTypeSelect(enums);
 	select.id="event_type";
+	select.value = eventData.event_type_id;
 	select.onchange = updateEvent;
 	document.getElementById('event_type_container').appendChild(select);
-
-	select.value = eventData.event_type_id;
+	
+	select = makeLocationSelect(enums);
+	select.id = "location_id";
+	select.value = eventData.location_id;
+	select.onchange = updateEvent;
+	document.getElementById('location_container').appendChild(select);
 
 
 	thisSeason = eventData.season_id;
@@ -561,7 +565,7 @@ function updateEvent()
 	data.token = document.getElementById('token').value;
 	data.event_type = Number(document.getElementById('event_type').value);
 	data.event_id = Number(event_id);
-
+	data.location_id = Number(document.getElementById('location_id').value);
 
 	eventOutbox.send(data); //send the data to the server
 	setFeedbackBox();

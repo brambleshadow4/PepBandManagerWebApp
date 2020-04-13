@@ -27,7 +27,7 @@ body{
 	nav 
 	{
 		color: white;
-		background-color: red;
+		background-color: #ff4d4d;
 		padding-left: 8pt;
 		font-size: 14pt;
 		
@@ -67,7 +67,7 @@ body{
 		padding: 0px;
 		position: absolute;
 		z-index: 20;
-		background-color: red;
+		background-color:  #ff4d4d;
 		display: none;
 		width: 1.75in;
 	}
@@ -79,7 +79,7 @@ body{
 
 	nav a:hover, nav .expand-menu:hover
 	{
-		background-color: #cc0000; /*#b30000;*/
+		background-color: #e60000; /*#b30000;*/
 	}
 
 
@@ -115,6 +115,14 @@ body{
 		flex-direction: row;
 	}
 
+	.column
+	{
+		display: flex;
+		box-sizing: border-box;
+		flex-direction: row;
+		align-items: flex-start;
+	}
+
 
 .left-pad
 {
@@ -124,6 +132,11 @@ body{
 .right-pad
 {
 	padding-right: 12pt;
+}
+
+.right-margin
+{
+	margin-right: 12pt;
 }
 
 .bottom-pad

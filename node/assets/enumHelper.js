@@ -83,3 +83,19 @@ function makeInstrumentSelect(enums)
 
 	return select;
 }
+
+function makeLocationSelect(enums)
+{
+	var select = document.createElement('select');
+
+	for (var i in enums.locations)
+	{
+		var option = document.createElement('option');
+		option.innerHTML = enums.locations[i].name;
+		option.value = enums.locations[i].id;
+
+		select.appendChild(option);
+	}
+
+	return select;
+}

@@ -7,10 +7,11 @@ exports.run = function(req, res)
 		"default_season": null,
 		"instruments": [],
 		"event_types": [],
-		"attendance_notes": []
+		"attendance_notes": [],
+		"locations": [],
 	};
 
-	var tasks = 4;
+	var tasks = 5;
 	function done()
 	{
 		tasks--;
@@ -72,12 +73,21 @@ exports.run = function(req, res)
 
 		done();
 	});
+
+	db.all("SELECT * FROM Locations", [], (err, rows) => 
+	{
+		if (err) 
+			throw err;
+
+		rows.forEach((row) => {
+			data.locations.push(row);
+		});
+
+		done();
+	});
 	 
 	// close the database connection
 	db.close();
-
-
-	
 };
 
  

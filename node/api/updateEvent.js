@@ -43,13 +43,14 @@ exports.run = function(req, res)
 			|| req.body.date === undefined
 			|| req.body.description === undefined
 			|| req.body.event_type === undefined
+			|| req.body.location_id === undefined
 		)
 		{
 			console.log ("undefied field problem"); 
 			break;
 		};
 
-		if(isNaN(Number(req.body.event_type)) || isNaN(Number(req.body.default_points)))
+		if(isNaN(Number(req.body.event_type)) || isNaN(Number(req.body.default_points)) || isNaN(Number(req.body.location_id)))
 		{
 			console.log ("not a number problem"); 
 			break;
@@ -62,12 +63,13 @@ exports.run = function(req, res)
 
 		var sql = 
 		`UPDATE Events 
-		SET name= ?, event_type_id= ?, date=?, default_points= ?, description= ?
+		SET name= ?, event_type_id= ?, location_id = ?, date=?, default_points= ?, description= ?
 		WHERE id= ?`;
 
 		params = [
 			req.body.name,
 			req.body.event_type,
+			req.body.location_id,
 			req.body.date,
 			req.body.default_points,
 			req.body.description,

@@ -29,8 +29,8 @@ exports.run = function(req, res)
 			max = rows[0].max+1;
 
 
-			var sql =  `INSERT INTO Events (id, season_id, name, default_points, event_type_id, date, description)
-						VALUES (?, ?, 'New Event', 2, 0, ?, '')`;
+			var sql =  `INSERT INTO Events (id, season_id, name, default_points, event_type_id, location_id, date, description)
+						VALUES (?, ?, 'New Event', 2, 0, 0, ?, '')`;
 			db.all(sql, [max, req.body.season, new Date().toISOString().substring(0,10)], (err, rows) =>
 			{
 				if (err)

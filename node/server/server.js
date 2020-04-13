@@ -25,6 +25,13 @@ for (var line of settingsList)
 
 console.log(settings);
 
+var Template  = {
+	AdminNav: fs.readFileSync('components/navigation.template.html', 'utf8'),
+	MemberNav: fs.readFileSync('components/navUser.template.html', 'utf8'),
+}
+
+
+
 app.use(require('cookie-parser')());
 app.use(require('express-session')({
 	secret: settings['COOKIE_SECRET'] || "idk what this does",
@@ -112,9 +119,18 @@ app.get('/assets/*', function (req, res) {
 
 
 // profile
-	app.get('/profile', function (req, res) {
-		res.sendFile('./views/profile/profile.html', {root:"./"});
+	app.get('/profile', checkMember, function (req, res) {
+
+		var fills = {"nav": Template.MemberNav};
+		if(req.session.role === 1)
+			fills = {"nav": Template.AdminNav}
+
+		templateResponse("./views/profile/profile.html", fills, req ,res);
 	});
+
+	app.get('/profile/*', function (req, res) {
+		sendIfExists("/views" + req.url, res);
+	})
 
 
 // points
@@ -204,6 +220,10 @@ app.get('/assets/*', function (req, res) {
 		require('../api/getAdmins.js').run(req,res);
 	})
 
+	app.get('/api/getProfile', function (req, res) {
+		require('../api/getProfile.js').run(req,res);
+	})
+
 
 // Post APIs
 app.post('/api/updateEventAttendance', checkAdmin, bufferPostData, function (req, res) {
@@ -249,6 +269,15 @@ function checkAdmin(req,res,next)
 		res.redirect("/");
 }
 
+function checkMember(req,res,next)
+{	
+	if(req.session.netID === undefined || req.session.netID === "")
+		res.redirect("/");
+	else
+		next();
+}
+
+
 function sendIfExists(url, res)
 {
 	var modURL = url;
@@ -270,35 +299,61 @@ function sendFileWithCRSF(filename, req, res)
 {
 	fs.readFile(filename, function(err, data) 
 	{
-        if (err) 
-        {
-            res.send(404);
-            return;
-        } 
-        else
-        {
-            res.contentType('text/html'); // Or some other more appropriate value
-            data = data.toString('utf-8');
-            data = data.replace("{{crsf}}", req.session.crsf);
-            res.send(data);
-            return;
-        }
-    });
+		if (err) 
+		{
+			res.send(404);
+			return;
+		} 
+		else
+		{
+			res.contentType('text/html'); // Or some other more appropriate value
+			data = data.toString('utf-8');
+			data = data.replace("{{crsf}}", req.session.crsf);
+			res.send(data);
+			return;
+		}
+	});
 }
+
+function templateResponse(template, fills, req, res)
+{
+	fs.readFile(template, function(err, data) 
+	{
+		if (err) 
+		{
+			res.send(404);
+			return;
+		} 
+		else
+		{
+			res.contentType('text/html'); // Or some other more appropriate value
+			data = data.toString('utf-8');
+
+			for(var key in fills)
+			{
+				data = data.replace("{{" + key + "}}", fills[key]);
+			}
+
+			res.send(data);
+			return;
+		}	
+	});
+}
+
 
 
 function bufferPostData(req, res, next) 
 {
-    var data='';
-    req.setEncoding('utf8');
-    req.on('data', function(chunk) { 
-       data += chunk;
-    });
+	var data='';
+	req.setEncoding('utf8');
+	req.on('data', function(chunk) { 
+	   data += chunk;
+	});
 
-    req.on('end', function() {
-        req.body = JSON.parse(data);
-        next();
-    });
+	req.on('end', function() {
+		req.body = JSON.parse(data);
+		next();
+	});
 }
 
 

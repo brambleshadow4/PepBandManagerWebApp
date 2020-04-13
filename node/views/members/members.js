@@ -265,6 +265,7 @@ async function editMember(member)
 	// load point data
 	document.getElementById('lifetime-points').innerHTML = "";
 	document.getElementById('season-points').innerHTML = "";
+	document.getElementById('profile-link').href = "profile?id=" + member.id;
 
 	var points = await loadJsonP("api/getMemberPoints?member=" + member.id);
 

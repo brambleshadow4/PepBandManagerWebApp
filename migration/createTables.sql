@@ -56,12 +56,26 @@ CREATE TABLE Events (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name varchar(255),
 	season_id int,
-	event_type_id int,
+	event_type_id TINYINT,
+	location_id tinyint,
 	date date,
 	default_points int,
 	open_signup BOOLEAN,
 	description varchar(255)
 );
+
+CREATE TABLE Locations (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name varchar(255)
+);
+
+INSERT INTO Locations (id, name) VALUES 
+(0, "Home"),
+(1, "Away"),
+(2, "Playoff"),
+(3, "Renegade");
+(4, "Away + Playoff");
+
 
 CREATE INDEX seasonIndex ON Events (season_id);
 

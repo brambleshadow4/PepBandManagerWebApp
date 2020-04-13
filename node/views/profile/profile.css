@@ -1,0 +1,235 @@
+.points-row
+{
+	font-size: 40pt;
+}
+
+body
+{
+	background-color: #E6E6E6;
+}
+
+table td
+{
+	text-align: center;
+}
+
+body div
+{
+	
+}
+
+
+.season-pts { color: green; }
+.lifetime-pts { color: blue; }
+
+#main-row-container
+{
+	text-align: center;
+}
+
+#main-row
+{
+	display: inline-block;
+	padding: 0 12px;
+}
+
+.column > div
+{
+	width: 50%;
+	margin: 0px;
+}
+
+.column .card
+{
+	
+}
+
+.card
+{
+	background-color: #FFFFFF;
+	border-radius: 6px;
+	margin-top: 12px;
+	margin-left: 12px;
+	padding: 12px;
+}
+
+#main-row h1, #main-row table
+{
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#main-row h1 { margin-right: 12px; }
+
+.card h2
+{
+	margin: 0px;
+	margin-bottom: 6pt;
+}
+
+.season
+{
+	border-left: 4px solid #ff4d4d;
+	
+	margin: 12px;
+	margin-bottom: 24px;
+}
+
+.season .body
+{
+	display: none;
+}
+
+.season.open .body
+{
+	display: block;
+}
+
+.season .line
+{
+	min-height: 40px;
+
+	padding-left: 5px;
+	border-bottom: 1px solid black;
+	border-right: 1px solid black;
+	position: relative;
+}
+
+
+.open .line.header .line-l::before
+{
+	background-image: url(../assets/icons/ios-arrow-down.svg);
+}
+
+
+
+
+.line.header .line-l::before
+{
+	background-image: url(../assets/icons/ios-arrow-forward.svg);
+	background-size: 23px 23px;
+    display: inline-block;
+    width: 23px; 
+    height: 23px;
+    content:"";
+}
+
+.line.header
+{
+	font-weight: bold;
+	cursor: pointer;
+	border-top: 1px solid black;
+}
+
+.line .eventType
+{
+	width: 1.1in;
+	flex-shrink: 0;
+	flex-grow: 0;
+}
+
+.line .date
+{
+	width: .8in;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+.line
+{
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.line span
+{
+	flex-shrink: 1;
+	flex-grow: 1;
+}
+
+.line-l
+{
+	display: flex;
+	flex-grow: row;
+	align-items: center;
+
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+.line-r
+{
+	display: flex;
+	flex-grow: row;
+	align-items: center;
+	padding-right: 5px;
+}
+
+.line.header:nth-child(odd)
+{
+	background-color: #ffd0d0;
+}
+
+.line:nth-child(even), 
+{
+	background-color: #ffe0e0;
+}
+
+.line:nth-child(odd)
+{
+	
+	background-color: #fff6f6;
+}
+
+
+.achievement-div
+{
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 6pt;
+}
+
+.achievement img
+{
+	width: 80%;
+
+    display: block;
+    margin: auto;
+}
+
+.achievement
+{
+	width: 25%;
+	/*height: 50px;*/
+	position: relative;
+	
+	text-align: center;
+}
+.achievement.locked
+{
+	color: black;
+}
+
+.achievement img.lock-img
+{
+	display: none;
+}
+
+.achievement.locked img.lock-img
+{
+	display: block;
+	position: absolute;
+	width: 50%;
+	left: 25%;
+	top: 10%;
+}
+
+.achievement
+{
+
+}
+
+#achievement-count
+{
+	float: right;
+}

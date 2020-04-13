@@ -25,14 +25,14 @@ with open('members_import.sql', 'w', newline='\r\n') as f:
 
 		
 with open('events_import.sql', 'w', newline='\r\n') as f:
-	s = "INSERT INTO Events (id, name, season_id, event_type_id, date, default_points, description, open_signup) VALUES ({0}, '{1}', {2}, {3}, '{4}', {5}, '{6}', 0);\n"
+	s = "INSERT INTO Events (id, name, season_id, event_type_id, location_id, date, default_points, description, open_signup) VALUES ({0}, '{1}', {2}, {3}, {4}, '{5}', {6}, '{7}', 0);\n"
 
 	for event in databaseData["events"]:
 
 		event["name"] = makeSafe(event["name"])
 		event["description"] = makeSafe(event["description"])
 
-		f.write(s.format(event["id"], event["name"], event["season_id"], event["event_type_id"], event["date"], event["default_points"], event["description"]))
+		f.write(s.format(event["id"], event["name"], event["season_id"], event["event_type_id"], event["location_id"], event["date"], event["default_points"], event["description"]))
 
 
 

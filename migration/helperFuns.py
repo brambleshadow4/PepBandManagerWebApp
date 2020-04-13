@@ -36,6 +36,9 @@ def getReference(root, path, element, idlookup):
 	elif refElement.tag == "EventType":
 		return idlookup["eventTypes"][refElement.find("name").text]
 
+	elif refElement.tag == "Location":
+		return idlookup["locations"][refElement.find("name").text]
+
 
 	raise Exception("Reference not found:" + refElement.tag)
 	

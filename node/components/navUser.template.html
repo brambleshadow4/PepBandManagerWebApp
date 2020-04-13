@@ -1,0 +1,11 @@
+<nav>
+	<a href="profile">My Profile</a>
+	<a class='float-right' onclick="logOut()">Log Out</a>
+	<script>
+		function logOut()
+		{
+			sessionStorage["logout"] = "1";
+			window.location.href="logout"
+		}
+	</script>
+</nav>

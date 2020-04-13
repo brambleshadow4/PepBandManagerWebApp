@@ -1,10 +1,106 @@
 <!DOCTYPE html>
 <html>
-	<head></head>
+	<head>
+		<link href="assets/style1.css" type="text/css" rel="stylesheet" />
+		<link href="profile/profile.css" type="text/css" rel="stylesheet" />
+
+		<script src="api/enums.js"></script>
+		<script src="assets/enumHelper.js"></script>
+		<script src="assets/api.js"></script>
+
+		<script src="profile/profile.js"></script>
+	</head>
 	<body>
-		<h1>Coming soon!</h1>
-		<h2>Your personalized pep band stats here</h2>
-		
+
+		{{nav}}
+
+		<div class='scroll frame'>
+			
+			<div id='main-row-container'><div id='main-row' class='card margin-right' style="display: none"></div></div>
+
+			<div class='column'>
+				<div>
+
+					<div class='card'>
+						<h2>Sign Ups</h2>
+						<div id='signups'>There are no events to sign up for at this time. Stay faithful!</div>
+					</div>
+					<div class='card'>
+						<h2>Achievements<span id='achievement-count'>1/12</span></h2>
+						<div class='achievement-div'>
+							<div class='achievement' >
+								<img src="../assets/img/band.jpg" />
+								<div>Join Band!</div>
+							</div>
+							<div class='achievement locked' title="Attend two pepband events in the same day">
+								<img src="../assets/img/locked--times2.png" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>Back for more</div>
+							</div>
+							<div class='achievement locked' title="Attend a football or sprint football event with the pepband.">
+								<img src="../assets/img/locked--football.png" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>Not Marching Band</div>
+							</div>
+							<div class='achievement locked' title="Go on an away trip.">
+								<img src="../assets/img/locked--bus.png" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>I'm on a bus!</div>
+							</div>
+						</div>
+						<div class='achievement-div'>
+							<div class='achievement locked' title="Attend 10 different kinds of events ">
+								<img src="../assets/img/locked--sports.jpg" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>Athletic Tour</div>
+							</div>
+							<div class='achievement locked' title="Help out at a phonathon.">
+								<img src="../assets/img/locked--money.gif" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>Breadwinner</div></div>
+							<div class='achievement locked' title="Support women's athletics by attending 20 games.">
+								<img src="../assets/img/locked--equality.png" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>Equality</div></div>
+							<div class='achievement locked' title="Attend 14 Men's Hockey games.">
+								<img src="../assets/img/locked--hockey.jpg" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>Lynah Faithful</div></div>
+						</div>
+						<div class='achievement-div'>
+							<div class='achievement locked' title="Gain 150 points or more in a single season.">
+								<img src="../assets/img/locked--dedication.jpg" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>Dedication</div>
+							</div>
+							<div class='achievement locked' title="Gain 250 lifetime points.">
+								<img src="../assets/img/locked--halfstar.png" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>Half way there</div>
+							</div>
+							<div class='achievement locked' title="Gain 500 lifetime points.">
+								<img src="../assets/img/locked--star.png" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>500 point club</div>
+							</div>
+							<div class='achievement locked' title="Attend an event a year after you graduate.">
+								<img src="../assets/img/locked--alma_mater.jpg" />
+								<img class='lock-img' src="../assets/img/lock.png" />
+								<div>Alma Mater</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<div class='card right-margin' id='history'>
+						<h2>Your Pep Band History</h2>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
 		<!-- remove this when there's a proper logout button -->
 		<script> sessionStorage["logout"] = "1"; </script>
 	</body>
