@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS Events;
 DROP TABLE IF EXISTS Event_Types;
 DROP TABLE IF EXISTS Seasons;
 DROP TABLE IF EXISTS Suckpoint_Members;
+DROP TABLE IF EXISTS Locations;
 
 CREATE TABLE Instruments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,7 +74,7 @@ INSERT INTO Locations (id, name) VALUES
 (0, "Home"),
 (1, "Away"),
 (2, "Playoff"),
-(3, "Renegade");
+(3, "Renegade"),
 (4, "Away + Playoff");
 
 
