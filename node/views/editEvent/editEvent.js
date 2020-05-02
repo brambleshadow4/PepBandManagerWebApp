@@ -17,6 +17,7 @@ document.getElementById('printout').setAttribute('href',"editEvent/printout.pdf?
 var eventOutbox = new Outbox("../api/updateEvent", setFeedbackBox, setFeedbackBoxFail);
 var attendeeOutboxes = {};
 
+var determineIntialView = true;
 var isPlanningView = false;
 
 var enumLookup = makeEnumLookup(enums);
@@ -31,7 +32,7 @@ for(var instrument in enums.instruments)
 
 var thisSeason;
 
-
+var refreshAllData = false;
 
 // Data Loading Functions
 
@@ -169,18 +170,28 @@ async function loadPage()
 	document.getElementById('date').value = eventData.date;
 	document.getElementById('description').value = eventData.description;
 
+	if(eventData.open_signup)
+		document.getElementById('open_signup').checked = true;
+
+	console.log("recieved data");
+	console.log(eventData)
+
 	document.getElementsByTagName('title')[0].innerHTML = "BRPB: " + eventData.name;
+
+
 
 	var select = makeEventTypeSelect(enums);
 	select.id="event_type";
 	select.value = eventData.event_type_id;
 	select.onchange = updateEvent;
+	document.getElementById('event_type_container').innerHTML = "";
 	document.getElementById('event_type_container').appendChild(select);
 	
 	select = makeLocationSelect(enums);
 	select.id = "location_id";
 	select.value = eventData.location_id;
 	select.onchange = updateEvent;
+	document.getElementById('location_container').innerHTML = "";
 	document.getElementById('location_container').appendChild(select);
 
 
@@ -193,7 +204,17 @@ async function loadPage()
 		signupStatus[key] = eventData.attendees[key];
 	}
 
-	renderPointsView();
+
+	if(determineIntialView)
+	{
+		determineIntialView = false;
+		isPlanningView = eventData.open_signup;
+	}
+
+	if(isPlanningView)
+		renderPlanningView();
+	else
+		renderPointsView();
 	searchbarLoadMembers(true);
 }
 
@@ -206,6 +227,16 @@ loadJSON("../api/getEvent?id=" + location.search.substring(1),
 	closeEvent
 );
 
+
+function selfSignup()
+{
+	if(!document.getElementById('open_signup').checked)
+	{
+		refreshAllData = true;
+	}
+
+	updateEvent();
+}
 
 function renderPointsView()
 {
@@ -373,6 +404,7 @@ function addMemberToAvailable(memberId)
 { 
 	console.log(memberId);
 
+
 	var memberObj = memberLookup[memberId]
 	var points = (memberLookup[memberId].points === undefined ? 0 : memberObj.points);
 	var div = document.createElement('div');
@@ -430,6 +462,12 @@ function addMemberToAvailable(memberId)
 		signupStatus[memberId].status += 2;
 		updateAttendee(memberId);
 	}
+
+
+	console.log(memberObj.first_name + " status " + signupStatus[memberId].status)
+
+	if(signupStatus[memberId].status == 1)
+		actionSpans[0].parentNode.removeChild(actionSpans[0]);
 
 	var divs = document.getElementById('available').getElementsByClassName("memberRow");
 	var i=0;
@@ -495,10 +533,11 @@ function addMemberToGoing(member_id)
 
 	actionSpans[0].onclick = function(e)
 	{
+		signupStatus[member_id].status -= 2;
+
 		removeMemberFromGoing(member_id);
 		addMemberToAvailable(member_id);
 
-		signupStatus[member_id].status -= 2;
 		updateAttendee(member_id);
 	}
 
@@ -534,6 +573,8 @@ document.getElementById('default_points').onchange = function()
 	}
 
 	updateEvent();
+
+
 }
 
 
@@ -566,6 +607,9 @@ function updateEvent()
 	data.event_type = Number(document.getElementById('event_type').value);
 	data.event_id = Number(event_id);
 	data.location_id = Number(document.getElementById('location_id').value);
+	data.open_signup = Number(document.getElementById('open_signup').checked);
+
+	console.log(data);
 
 	eventOutbox.send(data); //send the data to the server
 	setFeedbackBox();
@@ -602,6 +646,11 @@ function setFeedbackBox()
 		if(boxesSending == 0)
 		{
 			box.setAttribute('icon', "success");
+			if(refreshAllData)
+			{
+				loadPage();
+				refreshAllData = false;
+			}
 		}
 		else
 		{
@@ -808,7 +857,7 @@ document.getElementById('instrument-filter').onchange = function(e)
 						if(e.button == 0) addMemberToEvent(i);
 					}
 
-					if (signupStatus[i] != undefined && (signupStatus[i].status == 2 || isPlanningView))
+					if (signupStatus[i] != undefined && (signupStatus[i].status >= 2 || isPlanningView))
 					{
 						var label = document.createElement('span');
 						label.innerHTML = "Already added";
@@ -951,11 +1000,13 @@ document.getElementById('instrument-filter').onchange = function(e)
 					status: 0,
 					points: null,
 					note: 0
-				}		
+				}
+
+				updateAttendee(memberId);
+				addMemberToAvailable(memberId);		
 			}
 
-			updateAttendee(memberId);
-			addMemberToAvailable(memberId);
+			
 		}
 		else
 		{

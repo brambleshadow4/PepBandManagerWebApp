@@ -68,9 +68,11 @@ function makeSeasonSelect(enums)
 	return select;
 }
 
-function makeInstrumentSelect(enums)
+function makeInstrumentSelect(enums, defaultInstrument)
 {
 	var select = document.createElement('select');
+
+	var options = [];
 
 	for (var i in enums.instruments)
 	{
@@ -78,7 +80,15 @@ function makeInstrumentSelect(enums)
 		option.innerHTML = enums.instruments[i].name;
 		option.value = enums.instruments[i].id;
 
-		select.appendChild(option);
+		if(enums.instruments[i].id == defaultInstrument)
+			options.unshift(option)
+		else
+			options.push(option);
+	}
+
+	for(var i in options)
+	{
+		select.appendChild(options[i])
 	}
 
 	return select;

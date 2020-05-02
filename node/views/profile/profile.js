@@ -6,7 +6,7 @@ async function run()
 	var data = await loadJsonP("api/getProfile" + location.search);
 
 	document.getElementById('main-row').innerHTML = `
-		<h1>${data.name}</h1>
+		<h1>${data.member.name}</h1>
 		<table>
 			<tr class='points-row'><td class='season-pts'>${data.season_points}</td><td>/</td><td class='lifetime-pts'>${data.lifetime_points}</td><tr>
 			<tr><td class='season-pts'>Season Points</td><td></td><td class='lifetime-pts'>Lifetime Points</td><tr>
@@ -15,8 +15,8 @@ async function run()
 
 	document.getElementById('main-row').style.display = "inline-block";
 
-	console.log(data);
 
+	loadEventSignups(data);
 
 	// load history
 
@@ -113,8 +113,6 @@ async function run()
 		allEvents = allEvents.concat(data.seasons[i].events);
 	}
 
-	console.log(data.class_year)
-
 	for(var i=0; i < allEvents.length; i++)
 	{
 		var event = allEvents[i];
@@ -131,7 +129,7 @@ async function run()
 		}
 
 
-		if(new Date(event.date).getFullYear() > data.class_year)
+		if(new Date(event.date).getFullYear() > data.member.class_year)
 			unlockAchievement(11);
 
 
@@ -192,5 +190,120 @@ function formatDate(dte)
 	return month + "/" + day + "/" + year;
 }
 
+function formatDateShort(dte)
+{
+	var dateObj = new Date(dte);
+	var userTimezoneOffset = dateObj.getTimezoneOffset() * 60000 + 5000;
+	dateObj = new Date(dateObj.getTime() + userTimezoneOffset);
+
+	var dayName = ["Sunday", "Monday","Tuesday","Wednesday","Thursday", "Friday" ,"Saturday"][dateObj.getDay()];
+
+	var day = Number(dte.substring(8));
+	var month = Number(dte.substring(5,7));
+	return dayName + " " + month + "/" + day;
+}
+
+function loadEventSignups(data)
+{
+	var div = document.getElementById('signups');
+	div.innerHTML = "";
+
+	if(data.signups.length == 0)
+	{
+		div.innerHTML = "There are no events to sign up for at this time. Stay faithful!";
+		return;
+	}
+
+
+	
+
+	var first = true;
+
+	for(var event of data.signups)
+	{
+		var evDate = formatDateShort(event.date);
+		var description = "";
+
+		if(event.description.trim() != "")
+			description = "<div>" + event.description + "</div>";
+
+		var signup;
+
+		if(!event.open_signup)
+		{
+			signup = `<div class='signup-form'>Signup closed. Keep an eye out for the posted list.</div>`
+		}
+		else
+		{
+			if(event.status == 1 || event.status == 3)
+			{
+				var instrument = enumLookup.instruments[event.instrument_id]
+				signup = `<div class='signup-form'>
+					<div>You have signed up (${instrument})</div>
+					<div><button onclick="cancelSignup(${event.id})">Cancel</button></div>
+					</div>`
+			}
+			else
+			{
+				signup = `<div class='signup-form'>
+					<span class='instrument-container' id='${event.id}-instrument-container'></span>
+					<button onclick="signup(${event.id})">Sign up!</button>
+				</div>`
+			}
+		}
+		
+
+
+		var eventHTML = `
+			<div>
+				<div class='event-header'>${evDate} - ${event.name} - ${event.default_points}pt</div>
+				${description}
+				${signup}
+			</div>
+		`;
+
+
+		if(!first) div.innerHTML += "<hr>";
+		div.innerHTML += eventHTML;
+		first = false;
+	}
+
+	var instrumentContainers = document.getElementsByClassName('instrument-container')
+	for(var i=0; i<instrumentContainers.length; i++)
+	{
+		instrumentContainers[i].appendChild(makeInstrumentSelect(enums, data.member.instrument_id))
+	}
+}
+
+
+function signup(eventId)
+{
+	var instrumentSelect = document.getElementById(eventId+'-instrument-container').getElementsByTagName('select')[0]
+
+	var data = {
+		token: document.getElementById('token').value,
+		instrument: instrumentSelect.value,
+		event_id: eventId
+	};
+	
+	sendJSON("api/updateSignup", JSON.stringify(data), async function(){
+		
+		loadEventSignups( await loadJsonP("api/getProfile"));
+	
+	});
+}
+
+function cancelSignup(eventId)
+{
+	var data = {
+		token: document.getElementById('token').value,
+		event_id: eventId,
+		delete: true
+	};
+	
+	sendJSON("api/updateSignup", JSON.stringify(data), async function(){
+		loadEventSignups( await loadJsonP("api/getProfile"));
+	});
+}
 
 run();

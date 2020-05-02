@@ -125,6 +125,8 @@ app.get('/assets/*', function (req, res) {
 		if(req.session.role === 1)
 			fills = {"nav": Template.AdminNav}
 
+		fills.crsf = req.session.crsf;
+
 		templateResponse("./views/profile/profile.html", fills, req ,res);
 	});
 
@@ -246,12 +248,15 @@ app.post('/api/updateTable', checkAdmin, bufferPostData, function (req, res) {
 	require('../api/updateTable.js').run(req,res);
 })
 
+// this one is the only one that non-admins can run.
+app.post('/api/updateSignup', bufferPostData, function (req, res) {
+	require('../api/updateSignup.js').run(req,res);
+})
 
 
 app.get('/*', function (req, res) {
 	res.redirect("/");
 });
-
 
 function yep(url)
 {

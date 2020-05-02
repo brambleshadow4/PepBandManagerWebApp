@@ -32,26 +32,19 @@ exports.run = async function(req, res)
 		return rows[0].id
 	}
 
-	async function getName(userId)
+	async function getMemberInfo(userId)
 	{
-		let rows = await query("SELECT first_name, last_name FROM Members WHERE id= ?", [userId]);
+		let rows = await query("SELECT first_name, last_name, instrument_id, class_year FROM Members WHERE id= ?", [userId]);
 
 		if(rows.length)
-			return rows[0].first_name + " " + rows[0].last_name;
+			return {
+				name: rows[0].first_name + " " + rows[0].last_name,
+				instrument_id: rows[0].instrument_id,
+				class_year: rows[0].class_year
+			}
 		else
-			return "";
+			return {};
 	}
-
-	async function getYear(userId)
-	{
-		let rows = await query("SELECT class_year FROM Members WHERE id= ?", [userId]);
-
-		if(rows.length)
-			return rows[0].class_year;
-		else
-			return 0;
-	}
-
 
 
 	async function getSeasonPoints(memberId, seasonId)
@@ -92,7 +85,6 @@ exports.run = async function(req, res)
 			ORDER BY e.date DESC`, [memberId]);
 
 		
-
 		var eventList = {}
 		for(var i=0; i<rows.length; i++)
 		{
@@ -118,9 +110,68 @@ exports.run = async function(req, res)
 
 	async function getSignups()
 	{
-		return []
-	}
+	
+		let openEvents = await query(`
+			SELECT * 
+			FROM Events
+			WHERE open_signup = 1`, []);
 
+		let eventsSignedUpFor = await query(`
+			SELECT *
+			FROM Event_Attendance ea INNER JOIN Events e ON ea.event_id = e.id
+			WHERE ea.member_id = ? AND (((ea.status == 1 OR ea.status == 3) AND e.date >= date('now')) OR e.open_signup = 1)
+			`, [memberId]);
+
+
+		var events = {};
+
+		for(var i=0; i<openEvents.length; i++)
+		{
+			var ev = openEvents[i];
+			if (events[ev.id] == undefined)
+			{
+				events[ev.id] = ev;
+				ev.status = -1;
+				ev.instrument = null;
+			}
+		}
+
+		for(var i=0; i<eventsSignedUpFor.length; i++)
+		{
+			var ev = eventsSignedUpFor[i];
+			if (events[ev.id] == undefined)
+			{
+				events[ev.id] = ev;
+			}
+			else
+			{
+				events[ev.id].status = ev.status;
+			events[ev.id].instrument_id = ev.instrument_id;
+			}
+		}
+
+		var rows = [];
+		for(var key in events)
+		{
+			rows.push(events[key]);
+		}
+
+		rows.sort(function(a,b)
+		{
+			return a.date < b.date;
+		})
+
+		rows = rows.map(function(ev){ return { status: ev.status, instrument_id: ev.instrument_id,
+			description: ev.description,
+			date: ev.date,
+			default_points: ev.default_points,
+			name: ev.name,
+			open_signup: ev.open_signup,
+			id: ev.id
+		}});
+
+		return rows
+	}
 
 	var netId = req.session.netID;
 	var data;
@@ -145,12 +196,8 @@ exports.run = async function(req, res)
 		memberId = Number(req.query.id);
 	}
 	
-
-	
-
 	var profile = {
-		name: getName(memberId),
-		class_year: getYear(memberId),
+		member: getMemberInfo(memberId),
 		season_points: getSeasonPoints(memberId, seasonId),
 		lifetime_points: getLifetimePoints(memberId),
 		signups: getSignups(),

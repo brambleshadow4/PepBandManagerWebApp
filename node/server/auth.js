@@ -18,20 +18,25 @@ exports.run = async function(req, res)
 			return "";
 		});
 
-		req.session.role = await getRoleFromDb(req.session.netID);
+		var data = await getRoleFromDb(req.session.netID);
+		req.session.role = data.role;
+		req.session.member_id = data.member_id;
 
 	}
 	else if(req.settings.NO_AUTH)
 	{
 		req.session.netID = "";
 		req.session.role = 1;
+		req.session.member_id = -1;
 	}
 	else //ROLE DEBUG MODE
 	{
 		console.log(req.body);
 		req.session.netID = req.body.netID;
 
-		req.session.role = await getRoleFromDb(req.session.netID);
+		var data = await getRoleFromDb(req.session.netID);
+		req.session.role = data.role;
+		req.session.member_id = data.member_id;
 	}
 
 	req.session.crsf = uuidv4();
@@ -111,9 +116,9 @@ async function getRoleFromDb(netID)
 						reject(err);
 
 					if(rows.length > 0)
-						resolve(true);
+						resolve(rows[0].id);
 					else
-						resolve(false);
+						resolve(-1);
 				});
 			}
 		)
@@ -122,7 +127,7 @@ async function getRoleFromDb(netID)
 	async function allQueries(netID) 
 	{
 		return {
-			isMember: await isMember(netID),
+			member_id: await isMember(netID),
 			role: await getAdminRole(netID)
 	  	}
 	}
@@ -130,17 +135,21 @@ async function getRoleFromDb(netID)
 	
 	try
 	{
-		var roles = await allQueries(netID);
+		var data = await allQueries(netID);
 		db.close();
 
-		if(roles.role === null)
-			return roles.isMember ? 0 : -1; 
-		return roles.role;
+		if(data.member_id >= 0 && data.role === null)
+			data.role = 0;
+
+		return data;
 	}
 	catch(e)
 	{
 		console.log(e);
 		db.close();
-		return -1;
+		return {
+			role: -1,
+			member_id: -1
+		}
 	}
 }

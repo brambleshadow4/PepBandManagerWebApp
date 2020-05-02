@@ -44,9 +44,10 @@ exports.run = function(req, res)
 			|| req.body.description === undefined
 			|| req.body.event_type === undefined
 			|| req.body.location_id === undefined
+			|| req.body.open_signup === undefined
 		)
 		{
-			console.log ("undefied field problem"); 
+			console.log ("undefined field problem"); 
 			break;
 		};
 
@@ -56,6 +57,9 @@ exports.run = function(req, res)
 			break;
 		};
 
+		if(req.body.open_signup !== 1 && req.body.open_signup !== 0)
+			break;
+
 		if(!(/\d\d\d\d-\d\d-\d\d/.exec(req.body.date)))
 			break;
 
@@ -63,8 +67,8 @@ exports.run = function(req, res)
 
 		var sql = 
 		`UPDATE Events 
-		SET name= ?, event_type_id= ?, location_id = ?, date=?, default_points= ?, description= ?
-		WHERE id= ?`;
+		SET name = ?, event_type_id = ?, location_id = ?, date =?, default_points = ?, description = ?, open_signup = ?
+		WHERE id = ?`;
 
 		params = [
 			req.body.name,
@@ -73,9 +77,10 @@ exports.run = function(req, res)
 			req.body.date,
 			req.body.default_points,
 			req.body.description,
+			req.body.open_signup,
 			req.body.event_id
 		];
-	
+
 		db.all(sql, params, (err, rows) => 
 		{
 			if(err) throw err;
