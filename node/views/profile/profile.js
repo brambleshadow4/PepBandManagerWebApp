@@ -21,8 +21,10 @@ async function run()
 	// load history
 
 	data.seasons.sort(function(a,b){
-		return Number(a.id) < Number(b.id)
+		return Number(b.id) - Number(a.id)
 	})
+
+	console.log(data.seasons.slice());
 
 	for(var i = 0; i < data.seasons.length; i++)
 	{
@@ -57,9 +59,6 @@ async function run()
 
 		if(seasonPts >= 150)
 			unlockAchievement(8);
-
-		console.log(data.seasons[i].id);
-
 
 		var seasonName = enumLookup.seasons[data.seasons[i].id] + " Season";
 		if (data.seasons[i].id == enums.default_season)

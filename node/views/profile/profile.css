@@ -13,11 +13,6 @@ table td
 	text-align: center;
 }
 
-body div
-{
-	
-}
-
 
 .season-pts { color: green; }
 .lifetime-pts { color: blue; }
@@ -37,11 +32,6 @@ body div
 {
 	width: 50%;
 	margin: 0px;
-}
-
-.column .card
-{
-	
 }
 
 .card
@@ -245,4 +235,23 @@ body div
 #achievement-count
 {
 	float: right;
+}
+
+
+@media only screen and (max-width: 800px) {
+	.column 
+	{
+		display: block;
+	}
+
+	.column > div
+	{
+		width: 100%;
+	}
+
+	.card
+	{
+		margin-left: 12px;
+		margin-right: 12px;
+	}
 }
