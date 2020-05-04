@@ -74,7 +74,10 @@ async function dataloadSeasonMembers(seasonId)
 	{
 		let member = response[i];
 
-		memberLookup[member.id] = member;
+		if(memberLookup[member.id] == undefined)
+		{
+			memberLookup[member.id] = member;
+		}
 		memberLookup[member.id].isSeasonMember = true;
 	}
 
@@ -173,8 +176,6 @@ async function loadPage()
 	if(eventData.open_signup)
 		document.getElementById('open_signup').checked = true;
 
-	console.log("recieved data");
-	console.log(eventData)
 
 	document.getElementsByTagName('title')[0].innerHTML = "BRPB: " + eventData.name;
 
@@ -402,8 +403,6 @@ function addAttendeeToHTML(member_id)
 
 function addMemberToAvailable(memberId)
 { 
-	console.log(memberId);
-
 
 	var memberObj = memberLookup[memberId]
 	var points = (memberLookup[memberId].points === undefined ? 0 : memberObj.points);
@@ -454,17 +453,12 @@ function addMemberToAvailable(memberId)
 
 	actionSpans[2].onclick = function(e)
 	{
-		console.log(memberId + " moving back to going")
-
 		removeMemberFromAvailable(memberId);
 		addMemberToGoing(memberId);
 
 		signupStatus[memberId].status += 2;
 		updateAttendee(memberId);
 	}
-
-
-	console.log(memberObj.first_name + " status " + signupStatus[memberId].status)
 
 	if(signupStatus[memberId].status == 1)
 		actionSpans[0].parentNode.removeChild(actionSpans[0]);
@@ -609,8 +603,6 @@ function updateEvent()
 	data.location_id = Number(document.getElementById('location_id').value);
 	data.open_signup = Number(document.getElementById('open_signup').checked);
 
-	console.log(data);
-
 	eventOutbox.send(data); //send the data to the server
 	setFeedbackBox();
 }
@@ -683,7 +675,6 @@ function editInstrumentPopup(memberId)
 
 	var member = memberLookup[memberId];
 
-	console.log(member);
 	var name = member.first_name + " " + member.last_name;
 
 	form.innerHTML = `<p>Change ${name}'s instrument</p>`;
@@ -759,13 +750,11 @@ document.getElementById('allMembersTrue').onchange = async function(e)
 {
 	await dataloadAllMembers();
 	searchbarLoadMembers(false);
-	console.log("loading all members")
 
 }
 
 document.getElementById('allMembersFalse').onchange = function(e)
 {
-	console.log("loading season members")
 	searchbarLoadMembers(true)
 }
 
@@ -937,7 +926,6 @@ document.getElementById('instrument-filter').onchange = function(e)
 			}
 			else if (document.getElementById('results').childNodes.length == 1)
 			{
-				console.log(document.getElementById('results').childNodes[0]);
 				document.getElementById('results').childNodes[0].onmousedown({button: 0});
 			}
 			
@@ -1005,8 +993,6 @@ document.getElementById('instrument-filter').onchange = function(e)
 				updateAttendee(memberId);
 				addMemberToAvailable(memberId);		
 			}
-
-			
 		}
 		else
 		{
