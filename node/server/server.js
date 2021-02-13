@@ -51,6 +51,12 @@ app.get('/pepband.db', checkAdmin, function (req, res) {
 	sendIfExists("/db/pepband.db", res);
 })
 
+app.get('/.well-known/*', function(req, res) {
+	sendIfExists("./" + req.url, res); 
+});
+
+
+
 // login & logout
 
 	app.post('/login', bodyParser.urlencoded({extended: true}), function (req, res) {	
