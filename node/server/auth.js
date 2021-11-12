@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-const uuidv4 = require('uuid/v4');
+const {v4: uuidv4} = require('uuid');
 
 exports.run = async function(req, res) 
 {
