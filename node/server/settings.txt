@@ -1,2 +1,0 @@
-HTTPS=false
-NO_AUTH=true
