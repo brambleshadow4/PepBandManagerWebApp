@@ -8,8 +8,8 @@
 		<link href="/landing/landing.css" type="text/css" rel="stylesheet" />
 		<link href="/assets/style1.css" type="text/css" rel="stylesheet" />
 
+		<script src="/assets/jwt-decode.js"></script>
 		<script src="https://accounts.google.com/gsi/client" async defer></script>
-
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -40,7 +40,7 @@
 
 				// decodeJwtResponse() is a custom function defined by you
 			     // to decode the credential response.
-			     const responsePayload = decodeJwtResponse(jwtResponse.credential);
+			     const responsePayload = jwt_decode(jwtResponse.credential);
 
 			     console.log("ID: " + responsePayload.sub);
 			     console.log('Full Name: ' + responsePayload.name);
