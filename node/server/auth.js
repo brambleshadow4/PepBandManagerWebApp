@@ -1,6 +1,10 @@
 const sqlite3 = require('sqlite3').verbose();
 const {v4: uuidv4} = require('uuid');
 
+const {OAuth2Client} = require('google-auth-library');
+const CLIENT_ID = "428252312756-djr3h6is5c0s8lfr5ev3pr1567rnnjat.apps.googleusercontent.com";
+const client = new OAuth2Client(CLIENT_ID);
+
 exports.run = async function(req, res) 
 {
 	/**
@@ -52,11 +56,6 @@ exports.run = async function(req, res)
 
 async function verify(token) 
 {
-	const CLIENT_ID = "428252312756-djr3h6is5c0s8lfr5ev3pr1567rnnjat.apps.googleusercontent.com";
-
-	const {OAuth2Client} = require('google-auth-library');
-	const client = new OAuth2Client(CLIENT_ID);
-
 	const ticket = await client.verifyIdToken({
 		idToken: token,
 		audience: CLIENT_ID,	
@@ -71,7 +70,7 @@ async function verify(token)
 	{
 		if(email.endsWith("@cornell.edu"))
 		{
-			return email.substring(0, email.length-12);
+			return email.substring(0, email.length - "@cornell.edu".length);
 		}
 
 		return email;

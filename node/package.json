@@ -4,12 +4,12 @@
   "description": "",
   "main": "server/server.js",
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "cookie-parser": "^1.4.5",
-    "express": "^4.17.1",
-    "express-session": "^1.17.0",
-    "google-auth-library": "^5.10.1",
-    "pdfkit": "^0.11.0",
+    "body-parser": "^1.19.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "google-auth-library": "^7.11.0",
+    "pdfkit": "^0.13.0",
     "sqlite3": "^4.2.0",
     "uuid": "^8.3.2"
   },
