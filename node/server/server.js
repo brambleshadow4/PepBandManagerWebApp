@@ -41,7 +41,7 @@ app.use(require('express-session')({
 	secure: settings['HTTPS']
 }));
 
-const port = 80;
+const port = settings["PORT"] || 80;
 
 yep("/components/memberSearchBox.js");
 yep("/components/memberSearchBox.css");
