@@ -9,11 +9,11 @@
     "express": "^4.17.2",
     "express-session": "^1.17.2",
     "google-auth-library": "^7.11.0",
+    "jsonwebtoken": "^8.5.1",
     "pdfkit": "^0.13.0",
     "sqlite3": "^4.2.0",
     "uuid": "^8.3.2"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

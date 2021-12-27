@@ -1,4 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
+//const jwt = require('jsonwebtoken');
+
 const {v4: uuidv4} = require('uuid');
 
 const {OAuth2Client} = require('google-auth-library');
@@ -54,10 +56,12 @@ exports.run = async function(req, res)
 }
 
 
-async function verify(token) 
+async function verify(tokenString) 
 {
+	// https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
+	
 	const ticket = await client.verifyIdToken({
-		idToken: token,
+		idToken: tokenString,
 		audience: CLIENT_ID,	
 		// Specify the CLIENT_ID of the app that accesses the backend
 		// Or, if multiple clients access the backend:
@@ -79,6 +83,8 @@ async function verify(token)
 	{
 		return "";
 	}
+
+	return "";
 }
 
 async function getRoleFromDb(netID)
@@ -131,7 +137,6 @@ async function getRoleFromDb(netID)
 	  	}
 	}
 
-	
 	try
 	{
 		var data = await allQueries(netID);

@@ -38,41 +38,23 @@
 		<script>
 			function onSignIn(jwtResponse) {
 
-				// decodeJwtResponse() is a custom function defined by you
-			     // to decode the credential response.
-			     const responsePayload = jwt_decode(jwtResponse.credential);
+				// sanity check
+			    /*const responsePayload = jwt_decode(jwtResponse.credential);
 
-			     console.log("ID: " + responsePayload.sub);
-			     console.log('Full Name: ' + responsePayload.name);
-			     console.log('Given Name: ' + responsePayload.given_name);
-			     console.log('Family Name: ' + responsePayload.family_name);
-			     console.log("Image URL: " + responsePayload.picture);
-			     console.log("Email: " + responsePayload.email);
+			    console.log(jwtResponse);
+			    console.log("ID: " + responsePayload.sub);
+			    console.log('Full Name: ' + responsePayload.name);
+			    console.log('Given Name: ' + responsePayload.given_name);
+			    console.log('Family Name: ' + responsePayload.family_name);
+			    console.log("Image URL: " + responsePayload.picture);
+			    console.log("Email: " + responsePayload.email);*/
 
 
-				if(sessionStorage["logout"])
-				{
-					delete sessionStorage["logout"];
-
-					var auth2 = gapi.auth2.getAuthInstance();
-					auth2.signOut().then(function () {
-						console.log('User signed out.');
-					});
-				}
-				else
-				{
-					// The ID token you need to pass to your backend:
-					/*var id_token = googleUser.getAuthResponse().id_token;
-
-					document.getElementById('token').value = id_token;
-					document.getElementById('submit').removeAttribute("disabled");
-					document.getElementById('submit').click();*/
-					//console.log("ID Token: " + id_token);
-
-					document.getElementById('token') = JSON.stringify(jwtResponse);
-					document.getElementById('submit').removeAttribute("disabled");
-					document.getElementById('submit').click();
-				}	
+				// The ID token you need to pass to your backend:
+				document.getElementById('token').value = jwtResponse.credential;
+				document.getElementById('submit').removeAttribute("disabled");
+				document.getElementById('submit').click();
+	
 			}
 		</script>
 
