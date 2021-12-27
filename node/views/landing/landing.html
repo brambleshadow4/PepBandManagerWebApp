@@ -69,7 +69,7 @@
 					document.getElementById('submit').click();*/
 					//console.log("ID Token: " + id_token);
 
-					document.getElementById('token') = JSON.stringify(jwtResponse);
+					document.getElementById('token').value = JSON.stringify(jwtResponse);
 					document.getElementById('submit').removeAttribute("disabled");
 					document.getElementById('submit').click();
 				}	

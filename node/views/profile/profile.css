@@ -219,6 +219,12 @@ table td
 
 }
 
+.achievement-desc
+{
+	font-style: italic;
+	font-size: 8pt;
+}
+
 
 .signup-form
 {
