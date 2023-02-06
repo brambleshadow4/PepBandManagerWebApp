@@ -143,7 +143,7 @@ async function run()
 		if(event.event_type_id == 4 || event.event_type_id == 10)
 			unlockAchievement(2)
 
-		if([11,12,13,14,15].indexOf(event.event_type_id) > -1)
+		if([11,12,13,14,15,16].indexOf(event.event_type_id) > -1)
 			womensGames++;
 
 		if(event.event_type_id == 6)
