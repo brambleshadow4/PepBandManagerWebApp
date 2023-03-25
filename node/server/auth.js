@@ -1,5 +1,4 @@
 const sqlite3 = require('sqlite3').verbose();
-//const jwt = require('jsonwebtoken');
 
 const {v4: uuidv4} = require('uuid');
 
