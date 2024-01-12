@@ -27,7 +27,7 @@ exports.run = function(req, res)
 	
 
 		var sql = `
-		SELECT m.id, m.netid, m.first_name, m.last_name, m.instrument_id,
+		SELECT m.id, m.netid, m.first_name, m.last_name, m.instrument_id, m.nick_name,
 		(
 			SELECT COALESCE(SUM(COALESCE(att.points, e.default_points)),0) 
 			FROM event_attendance att INNER JOIN events e ON att.event_id = e.id 
@@ -51,7 +51,7 @@ exports.run = function(req, res)
 				throw err;
 			}
 
-			output = ""
+			output = "Email,Points,Nickname,First,Last,Instrument" + '\n'
 
 			for(var i =0; i<rows.length; i++ )
 			{
@@ -63,7 +63,7 @@ exports.run = function(req, res)
 				if(!netid.includes("@ithaca.edu")) {
 					netid = netid + "@cornell.edu";
 				}
-				output += netid.replace(',','.') + ',' + rows[i]["points"] + ',' + rows[i]["first_name"].replace(',','.') + ',' + rows[i]["last_name"].replace(',','.') + ',' + instruments[rows[i]["instrument_id"]].replace(',','.');
+				output += netid.replace(',','.') + ',' + rows[i]["points"] + ',' + rows[i]["nick_name"] + ',' + rows[i]["first_name"].replace(',','.') + ',' + rows[i]["last_name"].replace(',','.') + ',' + instruments[rows[i]["instrument_id"]].replace(',','.');
 			}
 
 			res.attachment('points.csv');
