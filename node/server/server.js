@@ -149,6 +149,11 @@ app.get('/assets/*', function (req, res) {
 	app.get('/points/points.pdf', checkAdmin, function (req, res) {
 		require('../views/points/createPointList.js').run(req,res);
 	});
+	
+	app.get('/points/points.csv', checkAdmin, function (req, res) {
+		require('../views/points/createPointCSV.js').run(req,res);
+	});
+
 
 	app.get('/points/*', checkAdmin, function (req, res) {
 		sendIfExists("/views" + req.url, res);

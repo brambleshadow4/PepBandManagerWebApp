@@ -21,6 +21,14 @@ for(let i=enums.seasons.length-1; i >= 0; i--)
 	s500ptClub.href="javascript:lifetimePoints(" + enums.seasons[i].id + ")";
 
 	items.appendChild(s500ptClub);
+
+	var pointsCSV = document.createElement('a');
+
+	pointsCSV.innerHTML = "Points Spreadsheet";
+	pointsCSV.href = "points/points.csv?season=" + enums.seasons[i].id;
+
+	items.appendChild(pointsCSV);
+
 	seasonDiv.appendChild(items);
 	document.getElementById('seasons').appendChild(seasonDiv);
 }
