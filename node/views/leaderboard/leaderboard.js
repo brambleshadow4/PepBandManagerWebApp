@@ -9,10 +9,12 @@ async function buildTable(season_id, instrument_id) {
 	let header = document.createElement('div');
 	let body = document.createElement('div');
 	body.className = "body";
+	var offset = 0;
 	for(var j=0; j < points.length; j++)
 	{
 		if (instrument_id != -1 && points[j]["instrument_id"] != instrument_id) 
 		{
+			offset += 1;
 			continue;
 		}
 		var name = points[j]["first_name"] + ' ';
@@ -28,7 +30,7 @@ async function buildTable(season_id, instrument_id) {
 					<span class='points'>${points[j]["points"]}pt</span>
 				</div>
 				<div class='line-l'>
-					<span class='date'>${j+1}</span>
+					<span class='date'>${j+1 - offset}</span>
 					<span class='eventType'>${enumLookup.instruments[points[j]["instrument_id"]]}</span>
 					<span>${name}</span>
 				</div>
