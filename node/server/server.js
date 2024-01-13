@@ -140,6 +140,20 @@ app.get('/assets/*', function (req, res) {
 		sendIfExists("/views" + req.url, res);
 	})
 
+// leaderboard
+	app.get('/leaderboard', checkMember, function (req, res) {
+		var fills = {"nav": Template.MemberNav};
+		if(req.session.role == 1)
+			fills = {"nav": Template.AdminNav}
+
+		fills.crsf = req.session.crsf;
+
+		templateResponse("./views/leaderboard/leaderboard.html", fills, req, res);
+	});
+
+	app.get('/leaderboard/*', function (req, res) {
+		sendIfExists("/views" + req.url, res);
+	})
 
 // points
 	app.get('/points', checkAdmin, function (req, res) {
@@ -203,6 +217,10 @@ app.get('/assets/*', function (req, res) {
 // Get Apis
 	app.get('/api/enums.js', function (req, res) {
 		require('../api/enums.js').run(req,res);
+	})
+
+	app.get('/api/getMembersByPoints', function (req, res) {
+		require('../api/getMembersByPoints.js').run(req,res);
 	})
 
 	app.get('/api/getEvents', checkAdmin, function (req, res) {

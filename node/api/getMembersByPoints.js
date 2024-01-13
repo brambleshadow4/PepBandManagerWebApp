@@ -12,23 +12,34 @@ exports.run = function(req, res)
 	}
 
 	var sql = `
-	SELECT m.id, m.netid, m.first_name, m.last_name, m.instrument_id, m.nick_name,
+	SELECT m.first_name, m.last_name, m.instrument_id, m.nick_name,
 	(
 		SELECT COALESCE(SUM(COALESCE(att.points, e.default_points)),0) 
 		FROM event_attendance att INNER JOIN events e ON att.event_id = e.id 
-		WHERE member_id = m.id AND e.season_id = ?
+		WHERE member_id = m.id`;
+	if(season != -1)
+		sql += ` AND e.season_id = ?`;
+	sql += `
 	)
 	AS points
 	FROM members m
 	WHERE m.id IN (
 		SELECT att.member_id 
-		FROM event_attendance att INNER JOIN events e on att.event_id = e.id
-		WHERE e.season_id = ? )
-	`;
+		FROM event_attendance att INNER JOIN events e on att.event_id = e.id`;
+	if(season != -1)
+	{
+		sql += `
+	WHERE e.season_id = ?`;
+	} else {
+		sql += `
+		WHERE ? = ?`;
+	}
+	sql += `
+	)
+	ORDER BY points DESC, m.instrument_id ASC`;
 
 	db.all(sql, [season, season], (err, rows) => 
 	{
-		db.close();
 		if (err) 
 		{
 			throw err;
@@ -43,7 +54,8 @@ exports.run = function(req, res)
 		res.setHeader("Content-Type", "text/json");
 		res.writeHead(200);
 		res.end(JSON.stringify(members, undefined, 4));
-	});	
+	});
+	db.close();
 };
 
  
