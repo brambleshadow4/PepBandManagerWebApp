@@ -24,11 +24,10 @@ exports.run = function(req, res)
 		SELECT att.member_id 
 		FROM event_attendance att INNER JOIN events e on att.event_id = e.id
 		WHERE e.season_id = ? )
-	`;
+	ORDER BY points DESC, m.instrument_id ASC`;
 
 	db.all(sql, [season, season], (err, rows) => 
 	{
-		db.close();
 		if (err) 
 		{
 			throw err;
@@ -43,7 +42,8 @@ exports.run = function(req, res)
 		res.setHeader("Content-Type", "text/json");
 		res.writeHead(200);
 		res.end(JSON.stringify(members, undefined, 4));
-	});	
+	});
+	db.close();
 };
 
  
