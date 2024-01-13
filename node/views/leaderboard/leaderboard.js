@@ -1,15 +1,20 @@
 var enumLookup = makeEnumLookup(enums);
 
-async function buildTable(season_id) {
-	var points = await loadJsonP("../api/getMembersByPoints?season=2");
+var cur_table;
+async function buildTable(season_id, instrument_id) {
+	var points = await loadJsonP("../api/getMembersByPoints?season=" + season_id);
 	let seasonDiv = document.createElement('div');
+	cur_table = seasonDiv;
 	seasonDiv.classList.add("season")
 	let header = document.createElement('div');
 	let body = document.createElement('div');
 	body.className = "body";
-	console.log(points.length);
 	for(var j=0; j < points.length; j++)
 	{
+		if (instrument_id != -1 && points[j]["instrument_id"] != instrument_id) 
+		{
+			continue;
+		}
 		var name = points[j]["first_name"] + ' ';
 		if (points[j]["nick_name"] != "")
 		{
@@ -23,37 +28,18 @@ async function buildTable(season_id) {
 					<span class='points'>${points[j]["points"]}pt</span>
 				</div>
 				<div class='line-l'>
-					<span class='date'>uhh</span>
-					<span class='eventType'>joe</span>
+					<span class='date'>${j+1}</span>
+					<span class='eventType'>${enumLookup.instruments[points[j]["instrument_id"]]}</span>
 					<span>${name}</span>
 				</div>
 			</div>`;
 	}
 
-	if (season_id == "all") {
-		seasonName = "Lifetime Season";
-	} else {
-		seasonName = "Current Season";
-		seasonDiv.classList.add('open')
-	}
-
-	header.innerHTML = `<div class='line-r'></div><div class='line-l'>${seasonName}</div>`
 
 		
 	header.classList.add('header');
 	header.classList.add('line');
-
-	header.onclick = function()
-	{
-		if(seasonDiv.classList.contains("open"))
-		{
-			seasonDiv.classList.remove("open")
-		}
-		else
-		{
-			seasonDiv.classList.add("open")
-		}
-	}
+	seasonDiv.classList.add("open")
 
 	seasonDiv.appendChild(header);
 	seasonDiv.appendChild(body);
@@ -64,9 +50,29 @@ async function buildTable(season_id) {
 
 async function run() 
 {
-	buildTable("all");
-	buildTable(enums.current_season);
+	var seasonDropdown = document.getElementById('season-list');
+	var instrumentDropdown = document.getElementById('instrument-list');
+	
+	seasonDropdown.innerHTML += "<option value=-1>Lifetime</option>";
+	for (var i = enums.seasons.length - 1; i >= 0; i--) 
+	{
+		seasonDropdown.innerHTML += "\n<option value=" + i + ">" + enumLookup.seasons[i] + "</option>";
+	}
+
+	instrumentDropdown.innerHTML += "<option value=-1>All</option>";
+	for (var i = 0; i < enums.instruments.length; i++ )
+	{
+		instrumentDropdown.innerHTML += "\n<option value=" + i + ">" + enumLookup.instruments[i] + "</option>";
+	}
+	buildTable(-1, -1);
+	function listQ()
+	{
+		cur_table.remove();
+		buildTable(seasonDropdown.value, instrumentDropdown.value);
+	}
+	seasonDropdown.onchange = listQ;
+	instrumentDropdown.onchange = listQ;
 }
 
 
-run();
+window.onload=run();

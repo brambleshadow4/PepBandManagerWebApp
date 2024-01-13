@@ -9,14 +9,18 @@
 
 		<link href="assets/style1.css" type="text/css" rel="stylesheet" />
 		<link href="leaderboard/leaderboard.css" type="text/css" rel="stylesheet" />
-		<script src="leaderboard/leaderboard.js"></script>
 	</head>
 	<body>
 		{{nav}}
 
 		<div class='card right-margin' id='leaderboard'>
 			<h2>Points Leaderboard</h2>
+			<h3>Season: <select id='season-list'>
+				</select></h3>
+				<h3> Instrument: <select id="instrument-list">
+					</select></h3>
 		</div>
 		
+		<script src="leaderboard/leaderboard.js"></script>
 	</body>
 </html>
