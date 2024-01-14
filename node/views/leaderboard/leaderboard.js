@@ -55,7 +55,9 @@ async function run()
 	var seasonDropdown = document.getElementById('season-list');
 	var instrumentDropdown = document.getElementById('instrument-list');
 	
-	seasonDropdown.innerHTML += "<option value=-1>Lifetime</option>";
+	// Lifetime is a bit laggy, disable it for now pending rewrite, and replace it with current season
+	//seasonDropdown.innerHTML += "<option value=-1>Lifetime</option>";
+	seasonDropdown.innerHTML += `<option value=${enums.default_season}>Current Season</option>`;
 	for (var i = enums.seasons.length - 1; i >= 0; i--) 
 	{
 		seasonDropdown.innerHTML += "\n<option value=" + i + ">" + enumLookup.seasons[i] + "</option>";
@@ -66,7 +68,7 @@ async function run()
 	{
 		instrumentDropdown.innerHTML += "\n<option value=" + i + ">" + enumLookup.instruments[i] + "</option>";
 	}
-	buildTable(-1, -1);
+	buildTable(enums.default_season, -1);
 	function listQ()
 	{
 		cur_table.remove();
