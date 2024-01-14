@@ -6,6 +6,7 @@
 body
 {
 	background-color: #E6E6E6;
+	overflow: scroll;
 }
 
 table td
