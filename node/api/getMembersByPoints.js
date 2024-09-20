@@ -35,8 +35,8 @@ exports.run = function(req, res)
 		WHERE ? = ?`;
 	}
 	sql += `
-	)
-	ORDER BY points DESC, m.instrument_id ASC`;
+	), m.class_year
+	ORDER BY points DESC, m.instrument_id ASC, m.class_year ASC`;
 
 	db.all(sql, [season, season], (err, rows) => 
 	{

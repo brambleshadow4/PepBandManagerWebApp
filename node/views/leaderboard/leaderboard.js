@@ -10,6 +10,7 @@ async function buildTable(season_id, instrument_id) {
 	let body = document.createElement('div');
 	body.className = "body";
 	var offset = 0;
+	var innerLeaderboard = '';
 	for(var j=0; j < points.length; j++)
 	{
 		if (instrument_id != -1 && points[j]["instrument_id"] != instrument_id) 
@@ -24,7 +25,7 @@ async function buildTable(season_id, instrument_id) {
 		}
 		name += points[j]["last_name"];
 
-		body.innerHTML += `
+		innerLeaderboard += `
 			<div class='line'>
 				<div class='line-r'>
 					<span class='points'>${points[j]["points"]}pt</span>
@@ -38,7 +39,7 @@ async function buildTable(season_id, instrument_id) {
 	}
 
 
-		
+	body.innerHTML += innerLeaderboard;
 	header.classList.add('header');
 	header.classList.add('line');
 	seasonDiv.classList.add("open")
@@ -56,7 +57,7 @@ async function run()
 	var instrumentDropdown = document.getElementById('instrument-list');
 	
 	// Lifetime is a bit laggy, disable it for now pending rewrite, and replace it with current season
-	//seasonDropdown.innerHTML += "<option value=-1>Lifetime</option>";
+	seasonDropdown.innerHTML += "<option value=-1>Lifetime</option>";
 	seasonDropdown.innerHTML += `<option value=${enums.default_season}>Current Season</option>`;
 	for (var i = enums.seasons.length - 1; i >= 0; i--) 
 	{
