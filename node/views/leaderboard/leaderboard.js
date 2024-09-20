@@ -69,7 +69,7 @@ async function run()
 	{
 		instrumentDropdown.innerHTML += "\n<option value=" + i + ">" + enumLookup.instruments[i] + "</option>";
 	}
-	buildTable(enums.default_season, -1);
+	buildTable("-1", -1);
 	function listQ()
 	{
 		cur_table.remove();
