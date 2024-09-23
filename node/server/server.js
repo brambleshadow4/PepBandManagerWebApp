@@ -141,7 +141,7 @@ app.get('/assets/*', function (req, res) {
 	})
 
 // leaderboard
-	app.get('/leaderboard', checkMember, function (req, res) {
+	app.get('/leaderboard', checkBoth, function (req, res) {
 		var fills = {"nav": Template.MemberNav};
 		if(req.session.role == 1)
 			fills = {"nav": Template.AdminNav}
@@ -311,6 +311,13 @@ function checkMember(req,res,next)
 		next();
 }
 
+function checkBoth(req,res,next)
+{
+	if(req.session.role === 1 || !(req.session.netID === undefined || req.session.netID === "") )
+		next();
+	else
+		res.redirect("/");
+}
 
 function sendIfExists(url, res)
 {

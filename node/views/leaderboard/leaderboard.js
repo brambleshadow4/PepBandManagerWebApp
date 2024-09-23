@@ -63,13 +63,13 @@ async function run()
 	{
 		seasonDropdown.innerHTML += "\n<option value=" + i + ">" + enumLookup.seasons[i] + "</option>";
 	}
-
+	seasonDropdown.value = enums.default_season;
 	instrumentDropdown.innerHTML += "<option value=-1>All</option>";
 	for (var i = 0; i < enums.instruments.length; i++ )
 	{
 		instrumentDropdown.innerHTML += "\n<option value=" + i + ">" + enumLookup.instruments[i] + "</option>";
 	}
-	buildTable("-1", -1);
+	buildTable(enums.default_season, -1);
 	function listQ()
 	{
 		cur_table.remove();
