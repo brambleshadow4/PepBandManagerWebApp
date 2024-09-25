@@ -1,7 +1,8 @@
 var enumLookup = makeEnumLookup(enums);
 
 var cur_table;
-async function buildTable(season_id, instrument_id) {
+
+async function buildTable(season_id, instrument_id, class_year) {
 	var points = await loadJsonP("../api/getMembersByPoints?season=" + season_id);
 	let seasonDiv = document.createElement('div');
 	cur_table = seasonDiv;
@@ -14,6 +15,11 @@ async function buildTable(season_id, instrument_id) {
 	for(var j=0; j < points.length; j++)
 	{
 		if (instrument_id != -1 && points[j]["instrument_id"] != instrument_id) 
+		{
+			offset += 1;
+			continue;
+		}
+		if (class_year != "-1" && points[j]["class_year"] != class_year)
 		{
 			offset += 1;
 			continue;
@@ -33,6 +39,7 @@ async function buildTable(season_id, instrument_id) {
 				<div class='line-l'>
 					<span class='date'>${j+1 - offset}</span>
 					<span class='eventType'>${enumLookup.instruments[points[j]["instrument_id"]]}</span>
+					<span class='class'>${points[j]["class_year"]}</span>
 					<span>${name}</span>
 				</div>
 			</div>`;
@@ -53,9 +60,11 @@ async function buildTable(season_id, instrument_id) {
 
 async function run() 
 {
+	var points = await loadJsonP("../api/getMembersByPoints?season=-1");
 	var seasonDropdown = document.getElementById('season-list');
 	var instrumentDropdown = document.getElementById('instrument-list');
-	
+	var classDropdown = document.getElementById('class-list');
+
 	// Lifetime is a bit laggy, disable it for now pending rewrite, and replace it with current season
 	seasonDropdown.innerHTML += "<option value=-1>Lifetime</option>";
 	seasonDropdown.innerHTML += `<option value=${enums.default_season}>Current Season</option>`;
@@ -69,14 +78,30 @@ async function run()
 	{
 		instrumentDropdown.innerHTML += "\n<option value=" + i + ">" + enumLookup.instruments[i] + "</option>";
 	}
-	buildTable(enums.default_season, -1);
+	classDropdown.innerHTML += "<option value=-1>All</option>";
+	const classes = [];
+	for (var i = 0; i < points.length; i++)
+	{
+		if (classes.indexOf(points[i]["class_year"]) === -1) 
+		{
+			classes.push(points[i]["class_year"]);
+		}
+	}
+	classes.sort();
+	for (var i = classes.length - 1; i >= 0; i--)
+	{
+		classDropdown.innerHTML += "<option value=" + (classes[i]) + ">" + classes[i] + "</option>";
+	}
+
+	buildTable(enums.default_season, -1, -1);
 	function listQ()
 	{
 		cur_table.remove();
-		buildTable(seasonDropdown.value, instrumentDropdown.value);
+		buildTable(seasonDropdown.value, instrumentDropdown.value, classDropdown.value);
 	}
 	seasonDropdown.onchange = listQ;
 	instrumentDropdown.onchange = listQ;
+	classDropdown.onchange= listQ;
 }
 
 

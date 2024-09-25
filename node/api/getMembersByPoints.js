@@ -12,7 +12,7 @@ exports.run = function(req, res)
 	}
 
 	var sql = `
-	SELECT m.first_name, m.last_name, m.instrument_id, m.nick_name,
+	SELECT m.first_name, m.last_name, m.instrument_id, m.nick_name, m.class_year,
 	(
 		SELECT COALESCE(SUM(COALESCE(att.points, e.default_points)),0) 
 		FROM event_attendance att INNER JOIN events e ON att.event_id = e.id 

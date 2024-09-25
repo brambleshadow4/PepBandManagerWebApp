@@ -135,6 +135,13 @@ select {
 	flex-shrink: 0;
 }
 
+.line .class
+{
+	width: .8in;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
 .line
 {
 	display: flex;
