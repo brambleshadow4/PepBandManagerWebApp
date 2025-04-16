@@ -372,7 +372,7 @@ coppin state
 alaska
 mercyhurst
 rit
-st\. josephs
+sju|st\. joseph's|saint joseph's
 niagara
 northern michigan
 njit
@@ -431,7 +431,6 @@ shu|sacred heart`;
 			if (regex.test(event.name.toLowerCase()))
 			{
 				set.add(regex);
-				
 			}
 		}
 	}
