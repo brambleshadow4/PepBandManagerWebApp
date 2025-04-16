@@ -1,6 +1,5 @@
 var enumLookup = makeEnumLookup(enums);
 
-
 async function run()
 {
 	var data = await loadJsonP("api/getProfile" + location.search);
@@ -58,7 +57,7 @@ async function run()
 		}
 
 		if(seasonPts >= 150)
-			unlockAchievement(8);
+			unlockAchievement(12);
 
 		var seasonName = enumLookup.seasons[data.seasons[i].id] + " Season";
 		if (data.seasons[i].id == enums.default_season)
@@ -95,17 +94,19 @@ async function run()
 	// load achievements
 
 	if(data.lifetime_points >= 500)
-		unlockAchievement(10);
+		unlockAchievement(14);
 
 	if(data.lifetime_points >= 250)
-		unlockAchievement(9);
+		unlockAchievement(13);
 
 
 	var allEvents = [];
 	var dates = {};
 	var eventTypes = {};
-	var mensHockeyGames = 0;
 	var womensGames = 0;
+	var mensHockeyGames = 0;
+	var womensHockeyGames = 0;
+	var rehearsals = 0;
 
 	for(var i=0; i < data.seasons.length; i++)
 	{
@@ -129,7 +130,7 @@ async function run()
 
 
 		if(new Date(event.date).getFullYear() > data.member.class_year)
-			unlockAchievement(11);
+			unlockAchievement(15);
 
 
 		if(event.location_id == 1 || event.location_id == 4)
@@ -137,11 +138,15 @@ async function run()
 
 		var name = event.name.toLowerCase();
 
-		if(name.indexOf("phonathon") >= 0 || name.indexOf("phoneathon") >= 0)
-			unlockAchievement(5)
+		// It's not called Phonathon anymore, but keep the checks for the old people :)
+		if(name.indexOf("phonathon") >= 0 || name.indexOf("phoneathon") >= 0 || name.indexOf("thankathon") >= 0)
+			unlockAchievement(5);
+
+		if(name.indexOf("msg") >= 0)
+			unlockAchievement(9);
 
 		if(event.event_type_id == 4 || event.event_type_id == 10)
-			unlockAchievement(2)
+			unlockAchievement(2);
 
 		if([3,11,12,13,14,15,16].indexOf(event.event_type_id) > -1)
 			womensGames++;
@@ -149,19 +154,32 @@ async function run()
 		if(event.event_type_id == 6)
 			mensHockeyGames++;
 
-		//check if it's an away tirp.
+		if(event.event_type_id == 14)
+			womensHockeyGames++;
+
+		if(event.event_type_id == 0)
+			rehearsals++;
 	}
 
 	if(Object.keys(eventTypes).length >= 10)
-		unlockAchievement(4)
-
-	if(mensHockeyGames >= 14)
-		unlockAchievement(7)
+		unlockAchievement(4);
 
 	if(womensGames >= 20)
 		unlockAchievement(6);
 
-	document.getElementById('achievement-count').innerHTML = Object.keys(unlocked).length + "/12";
+	if(mensHockeyGames >= 14)
+		unlockAchievement(7);
+
+	if(womensHockeyGames >= 14)
+		unlockAchievement(8);
+
+	if(uniqueSchools(allEvents) >= 25)
+		unlockAchievement(10)
+
+	if(rehearsals >= 40)
+		unlockAchievement(11)
+
+	document.getElementById('achievement-count').innerHTML = Object.keys(unlocked).length + "/16";
 }
 
 var unlocked = {0: true}
@@ -303,6 +321,121 @@ function cancelSignup(eventId)
 	sendJSON("api/updateSignup", JSON.stringify(data), async function(){
 		loadEventSignups( await loadJsonP("api/getProfile"));
 	});
+}
+
+function uniqueSchools(allEvents)
+{
+	var schools =
+`colgate|toothpaste
+brown
+yale
+princeton
+quinnipiac
+clarkson
+slu|st\. lawrence|saint lawrence
+dartmouth
+harvard|hahvahd
+union
+rpi|rensselaer
+bryant
+umbc
+bing|binghamton
+bc|boston college
+bu|boston university
+villanova
+syracuse
+buffalo
+penn(?! state)|upenn
+psu|penn state
+denver
+maine
+oswego
+cortland
+missouri|mizzou
+monmouth
+morrisville state
+umd|umn duluth|minnesota duluth
+toronto(?! met)
+tmu|toronto met|toronto metropolitan
+lehigh
+caldwell
+american
+umich|michigan
+marquette
+columbia
+osu|ohio state
+guelph
+ottawa
+marist
+albany|ualbany
+coppin state
+alaska
+mercyhurst
+rit
+st\. josephs
+niagara
+northern michigan
+njit
+ntdp
+robert mason
+nipissing
+fairleigh dickinson
+youngstown state
+stony brook
+lock haven
+msu|michigan state
+chestnut hill
+laurentian
+le moine
+buffalo
+lafayette
+uah
+red star
+northeastern
+miami
+unh
+loyola
+rider
+brock
+carleton
+uvm
+marist
+navy
+umass|umass amherst
+canisius
+ucb|uc berkeley
+uva|virginia
+oklahoma state
+towson
+siena
+saint francis
+ryerson
+western ontario
+delaware
+hofstra
+umass lowell
+nebraska
+shu|sacred heart`;
+
+	var schoolRegexes = [];
+	schools.split(/\r?\n/g).forEach(s => {
+			const regex = new RegExp("\\b(?:" + s + ")\\b");
+			schoolRegexes.push(regex);
+		});
+
+	var set = new Set();
+	for (const event of allEvents)
+	{
+		for (const regex of schoolRegexes)
+		{
+			if (regex.test(event.name.toLowerCase()))
+			{
+				set.add(regex);
+				
+			}
+		}
+	}
+	return set.size;
 }
 
 run();
