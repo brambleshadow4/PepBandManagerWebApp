@@ -401,7 +401,7 @@ carleton
 uvm
 marist
 navy
-umass|umass amherst
+umass amherst
 canisius
 ucb|uc berkeley
 uva|virginia
