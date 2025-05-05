@@ -57,7 +57,7 @@ async function run()
 		}
 
 		if(seasonPts >= 150)
-			unlockAchievement(12);
+			unlockAchievement(16);
 
 		var seasonName = enumLookup.seasons[data.seasons[i].id] + " Season";
 		if (data.seasons[i].id == enums.default_season)
@@ -94,15 +94,16 @@ async function run()
 	// load achievements
 
 	if(data.lifetime_points >= 500)
-		unlockAchievement(14);
+		unlockAchievement(18);
 
 	if(data.lifetime_points >= 250)
-		unlockAchievement(13);
+		unlockAchievement(17);
 
 
 	var allEvents = [];
 	var dates = {};
 	var eventTypes = {};
+	var awayTrips = 0;
 	var womensGames = 0;
 	var mensHockeyGames = 0;
 	var womensHockeyGames = 0;
@@ -130,11 +131,18 @@ async function run()
 
 
 		if(new Date(event.date).getFullYear() > data.member.class_year)
-			unlockAchievement(15);
+			unlockAchievement(19);
 
+		if (event.location_id == 2 || event.locaiton_id == 4)
+			unlockAchievement(12);
 
-		if(event.location_id == 1 || event.location_id == 4)
-			unlockAchievement(3);
+		if (event.location_id == 1 || event.location_id == 4) {
+			awayTrips++;
+			if (event.event_type_id != 6) {
+				unlockAchievement(14);
+			}
+		}
+
 
 		var name = event.name.toLowerCase();
 
@@ -145,8 +153,14 @@ async function run()
 		if(name.indexOf("msg") >= 0)
 			unlockAchievement(9);
 
+		if(name.indexOf("crumpets") >= 0)
+			unlockAchievement(13);
+
 		if(event.event_type_id == 4 || event.event_type_id == 10)
 			unlockAchievement(2);
+
+		if (event.event_type_id == 1)
+			unlockAchievement(15);
 
 		if([3,11,12,13,14,15,16].indexOf(event.event_type_id) > -1)
 			womensGames++;
@@ -164,6 +178,9 @@ async function run()
 	if(Object.keys(eventTypes).length >= 10)
 		unlockAchievement(4);
 
+	if(awayTrips >= 8)
+		unlockAchievement(3);
+
 	if(womensGames >= 20)
 		unlockAchievement(6);
 
@@ -179,7 +196,7 @@ async function run()
 	if(rehearsals >= 40)
 		unlockAchievement(11)
 
-	document.getElementById('achievement-count').innerHTML = Object.keys(unlocked).length + "/16";
+	document.getElementById('achievement-count').innerHTML = Object.keys(unlocked).length + "/20";
 }
 
 var unlocked = {0: true}
@@ -424,12 +441,9 @@ shu|sacred heart`;
 		});
 
 	var set = new Set();
-	for (const event of allEvents)
-	{
-		for (const regex of schoolRegexes)
-		{
-			if (regex.test(event.name.toLowerCase()))
-			{
+	for (const event of allEvents) {
+		for (const regex of schoolRegexes) {
+			if (regex.test(event.name.toLowerCase())) {
 				set.add(regex);
 			}
 		}
