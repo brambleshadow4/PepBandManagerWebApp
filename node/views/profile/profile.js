@@ -133,7 +133,7 @@ async function run()
 		if(new Date(event.date).getFullYear() > data.member.class_year)
 			unlockAchievement(19);
 
-		if (event.location_id == 2 || event.locaiton_id == 4)
+		if (event.location_id == 2 || event.location_id == 4)
 			unlockAchievement(12);
 
 		if (event.location_id == 1 || event.location_id == 4) {
