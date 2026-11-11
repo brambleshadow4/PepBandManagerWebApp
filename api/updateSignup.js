@@ -11,15 +11,8 @@ exports.run = async function(req, res)
 	{
 		return new Promise(function(success, fail)
 		{
-			db.all(sql, args, (err, rows) => 
-			{
-				if(err)
-				{
-					db.close()
-					fail(err);
-				}
-				success(rows);
-			})
+			let rows = db.prepare(sql).all({}, ...args)
+			success(rows);
 		});
 	}
 

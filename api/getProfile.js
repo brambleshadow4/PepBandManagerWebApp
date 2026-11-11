@@ -7,15 +7,17 @@ exports.run = async function(req, res)
 	{
 		return new Promise(function(success, fail)
 		{
-			db.all(sql, args, (err, rows) => 
-			{
-				if(err)
-				{
-					db.close()
-					fail(err);
-				}
+			try{
+				let rows = db.prepare(sql).all({}, ...args);
 				success(rows);
-			})
+			}
+			catch(e)
+			{
+				console.log(sql);
+				console.log(args)
+				throw(e);
+			}
+			
 		});
 	}
 
@@ -176,11 +178,14 @@ exports.run = async function(req, res)
 	var netId = req.session.netID;
 	var data;
 
+	
+
 	try{
 		data = await Promise.all([getCurrentSeasonId(), getMemberId(netId)])
 	}
 	catch(e)
 	{
+		console.log(e);
 		res.setHeader("Content-Type", "text/json");
 		res.writeHead(400);
 		res.end("{}");

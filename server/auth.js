@@ -129,16 +129,12 @@ async function getRoleFromDb(netID)
 		return new Promise(
 			function(resolve, reject)
 			{
-				db.all("SELECT * FROM Admins WHERE netid=?", [netID], (err, rows) => 
-				{
-					if (err) 
-						reject(err);
+				let rows = db.prepare("SELECT * FROM Admins WHERE netid=?").all({}, netID)
 
-					if(rows.length > 0)
-						resolve(rows[0].role);
-					else
-						resolve(null);
-				});
+				if(rows.length > 0)
+					resolve(rows[0].role);
+				else
+					resolve(null);
 			}
 		)
 	}
@@ -148,16 +144,11 @@ async function getRoleFromDb(netID)
 		return new Promise(
 			function(resolve, reject)
 			{
-				db.all("SELECT * FROM Members WHERE netid=?", [netID], (err, rows) => 
-				{
-					if (err) 
-						reject(err);
-
-					if(rows.length > 0)
-						resolve(rows[0].id);
-					else
-						resolve(-1);
-				});
+				let rows = db.prepare("SELECT * FROM Members WHERE netid=?").all({}, netID)
+				if(rows.length > 0)
+					resolve(rows[0].id);
+				else
+					resolve(-1);
 			}
 		)
 	}
