@@ -14,20 +14,8 @@ exports.run = async function(req, res)
 	 *  1 Admin
 	 */
 
-	if(req.settings.HTTPS)
-	{
-		req.session.netID = await verify(req.body.token).catch(function(arg)
-		{
-			console.error(arg);
-			return "";
-		});
-
-		var data = await getRoleFromDb(req.session.netID);
-		req.session.role = data.role;
-		req.session.member_id = data.member_id;
-
-	}
-	else if (req.settings.SIMPLE_AUTH_PASSWORD)
+	
+	if (req.settings.SIMPLE_AUTH_PASSWORD)
 	{
 		var settings = {}
 		var settingsRaw = fs.readFileSync("server/settings.txt");
@@ -60,6 +48,19 @@ exports.run = async function(req, res)
 			req.session.role = -1;
 			req.session.member_id = -1;
 		}
+	}
+	else if(req.settings.HTTPS)
+	{
+		req.session.netID = await verify(req.body.token).catch(function(arg)
+		{
+			console.error(arg);
+			return "";
+		});
+
+		var data = await getRoleFromDb(req.session.netID);
+		req.session.role = data.role;
+		req.session.member_id = data.member_id;
+
 	}
 	else if(req.settings.NO_AUTH)
 	{

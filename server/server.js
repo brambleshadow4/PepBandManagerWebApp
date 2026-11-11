@@ -176,13 +176,14 @@ app.get('/assets/{*any}', function (req, res) {
 
 // Landing Page
 	app.get('/', function (req, res) {
-		if(settings.HTTPS)
-		{
-			res.sendFile('/views/landing/landing.html', {root:"./"});
-		}
+		
 		if(settings.SIMPLE_AUTH_PASSWORD)
 		{
 			res.sendFile('/views/landing/landingSimpleAuth.html', {root:"./"});
+		}
+		else if(settings.HTTPS)
+		{
+			res.sendFile('/views/landing/landing.html', {root:"./"});
 		}
 		else if(settings.NO_AUTH)
 		{
