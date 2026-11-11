@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = async function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');
@@ -7,17 +7,8 @@ exports.run = async function(req, res)
 	{
 		return new Promise(function(success, fail)
 		{
-			db.all(sql, args, (err, rows) => 
-			{
-
-				if(err)
-				{
-					db.close()
-					fail(err);
-				}
-				success(rows);
-			})
-
+			let rows = db.prepare(sql).all({}, ...args);
+			success(rows);
 		});
 	}
 
@@ -32,7 +23,7 @@ exports.run = async function(req, res)
 		return;
 	}
 
-	let rows = await query("SELECT MAX(id) as current_season FROM Seasons")
+	let rows = await query("SELECT MAX(id) as current_season FROM Seasons", [])
 	if(rows.length < 0)
 	{
 		res.setHeader("Content-Type", "text/json");

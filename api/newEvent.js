@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');
@@ -19,31 +19,22 @@ exports.run = function(req, res)
 		return;
 	}
 
-	db.all("SELECT MAX(id) AS max FROM Events", [], (err, rows) => 
+	let rows = db.prepare("SELECT MAX(id) AS max FROM Events").all()
+	
+	if(rows.length > 0)
 	{
-		if (err) 
-			throw err;
-
-		if(rows.length > 0)
-		{
-			max = rows[0].max+1;
+		max = rows[0].max+1;
 
 
-			var sql =  `INSERT INTO Events (id, season_id, name, default_points, event_type_id, location_id, date, description)
-						VALUES (?, ?, 'New Event', 2, 0, 0, ?, '')`;
-			db.all(sql, [max, req.body.season, new Date().toISOString().substring(0,10)], (err, rows) =>
-			{
-				if (err)
-					throw err;
-				
-				res.setHeader("Content-Type", "text/json");
-				res.writeHead(200);
-				res.end("\"editEvent?" + max + '"');
-			});
-
-		}
+		var sql =  `INSERT INTO Events (id, season_id, name, default_points, event_type_id, location_id, date, description)
+					VALUES (?, ?, 'New Event', 2, 0, 0, ?, '')`;
+		db.prepare(sql).all({}, max, req.body.season, new Date().toISOString().substring(0,10))
 		
-	});
+		res.setHeader("Content-Type", "text/json");
+		res.writeHead(200);
+		res.end("\"editEvent?" + max + '"');
+	}
+		
 
 	// close the database connection
 	db.close();

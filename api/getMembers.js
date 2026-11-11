@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');
@@ -23,19 +23,16 @@ exports.run = function(req, res)
 		params = [Number(req.query.season), Number(req.query.season)-1];
 	}
 
-	db.all(sql, params, (err, rows) => 
-	{
-		if (err) 
-			throw err;
+	let rows = db.prepare(sql).all({}, ...params) 
 
-		rows.forEach((row) => {
-			members.push(row);
-		});
 
-		res.setHeader("Content-Type", "text/json");
-		// res.writeHead(200);
-		res.end(JSON.stringify(members, undefined, 4));
+	rows.forEach((row) => {
+		members.push(row);
 	});
+
+	res.setHeader("Content-Type", "text/json");
+	// res.writeHead(200);
+	res.end(JSON.stringify(members, undefined, 4));
 
 	// close the database connection
 	db.close();

@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = async function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');
@@ -7,16 +7,18 @@ exports.run = async function(req, res)
 	{
 		return new Promise(function(success, fail)
 		{
-			db.all(sql, args, (err, rows) => 
-			{
-
-				if(err)
-				{
-					db.close()
-					fail(err);
-				}
+			try{
+				let rows = db.prepare(sql).all({}, ...args);
 				success(rows);
-			})
+			}
+			catch(e)
+			{
+				console.print(sql)
+				console.print(args)
+				console.error(e)
+				throw(e);
+			}
+			
 		});
 	}
 
@@ -141,7 +143,7 @@ exports.run = async function(req, res)
 
 			async function group()
 			{
-				await query(deleteSQL, row[selector]);
+				await query(deleteSQL, [row[selector]]);
 				await query(insertSQL, values);
 				return;
 			}
@@ -169,7 +171,7 @@ exports.run = async function(req, res)
 
 			for(var i in deleteValidation)
 			{
-				var rows = await query(deleteValidation[i], deleteID)
+				var rows = await query(deleteValidation[i], [deleteID])
 				if(rows.length > 0)
 				{
 					errors.push(`Cannot delete ${itemName} ${deleteID}; ${itemName} still in use.`)
@@ -177,7 +179,7 @@ exports.run = async function(req, res)
 				}
 			}
 			
-			allUpdates.push(query(deleteSQL, row[selector]));
+			allUpdates.push(query(deleteSQL, [row[selector]]));
 		}
 
 		await Promise.all(allUpdates);

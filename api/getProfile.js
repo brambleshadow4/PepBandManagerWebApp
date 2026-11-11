@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = async function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');

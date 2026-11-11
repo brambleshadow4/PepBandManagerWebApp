@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = function(req, res) 
 {
 	let members = [];
@@ -22,14 +22,11 @@ exports.run = function(req, res)
 		if(req.body.delete !== undefined)
 		{
 			let db = new sqlite3.Database('./db/pepband.db');
-			db.all("DELETE FROM Event_Attendance WHERE member_id=? AND event_id=?", [req.body.member_id, req.body.event_id], (err, rows) => 
-			{
-				if(err) throw err;
-
-				res.setHeader("Content-Type", "text/json");
-				res.writeHead(200);
-				res.end();
-			});
+			db.prepare("DELETE FROM Event_Attendance WHERE member_id=? AND event_id=?").all({}, req.body.member_id, req.body.event_id);
+			
+			res.setHeader("Content-Type", "text/json");
+			res.writeHead(200);
+			res.end();
 
 			db.close();
 			return;
@@ -70,20 +67,15 @@ exports.run = function(req, res)
 	
 		let db = new sqlite3.Database('./db/pepband.db');
 	
-		db.all("DELETE FROM Event_Attendance WHERE member_id=? AND event_id=?", [req.body.member_id, req.body.event_id], (err, rows) => 
-		{
-			if(err) throw err;
+		db.prepare("DELETE FROM Event_Attendance WHERE member_id=? AND event_id=?").all({}, req.body.member_id, req.body.event_id)
+		
+		db.prepare("INSERT INTO Event_Attendance (member_id, event_id, points, note, instrument_id, status) VALUES (?, ?, ?, ?, ?, ?)").all({}, ...params)
 
-			db.all("INSERT INTO Event_Attendance (member_id, event_id, points, note, instrument_id, status) VALUES (?, ?, ?, ?, ?, ?)", params, (err,rows) => {
 
-				if (err) throw err;
-
-				res.setHeader("Content-Type", "text/json");
-				res.writeHead(200);
-				res.end();
+		res.setHeader("Content-Type", "text/json");
+		res.writeHead(200);
+		res.end();
 					
-			});
-		});
 
 		// close the database connection*/
 		db.close();

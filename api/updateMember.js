@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = function(req, res) 
 {
 	let members = [];
@@ -14,8 +14,6 @@ exports.run = function(req, res)
 			{console.log ("crsf problem"); break;}
 
 
-		console.log(req.body);
-
 		if(req.body.new_netid !== undefined && (typeof req.body.new_netid) == "string")
 		{
 			if(req.body.new_netid.trim() == "")
@@ -27,53 +25,51 @@ exports.run = function(req, res)
 			let db = new sqlite3.Database('./db/pepband.db');
 			if(req.body.id === -1)
 			{
-				db.all(
-					`INSERT INTO Members (netid, first_name, last_name, nick_name, class_year, instrument_id)
-					VALUES (?, '', '', '', ?, 0);`, [req.body.new_netid, new Date().getFullYear()], (err, rows) => 
+				try{
+					db.prepare(`INSERT INTO Members (netid, first_name, last_name, nick_name, class_year, instrument_id)
+					VALUES (?, '', '', '', ?, 0)`).all({}, req.body.new_netid, new Date().getFullYear())
+				}
+				catch(err)
 				{
-					if(err)
-					{
-						console.log(err);
-						res.setHeader("Content-Type", "text/json");
-						res.writeHead(400);
-						res.end('{"error": "netid already in use"}');
+					res.setHeader("Content-Type", "text/json");
+					res.writeHead(400);
+					res.end('{"error": "netid already in use"}');
 
-						db.close();
-						return; 
-					}
+					db.close();
+					return; 
+				}
+				
+			
 
-					db.all("SELECT id FROM Members WHERE netid = ?", [req.body.new_netid], (err, rows) => 
-					{
-						if(err) throw err;
+				let rows = db.prepare("SELECT id FROM Members WHERE netid = ?").all({}, req.body.new_netid);
 
-						res.setHeader("Content-Type", "text/json");
-						res.writeHead(200);
-						res.end('{"id": ' + rows[0].id + '}');
+				
+				res.setHeader("Content-Type", "text/json");
+				res.writeHead(200);
+				res.end('{"id": ' + rows[0].id + '}');
 
-						db.close();
-					});
-				});
+				db.close();
 
 				return;
 			}
 			else
 			{
-				db.all("UPDATE Members SET netid=? WHERE id= ?", [req.body.new_netid, req.body.id], (err, rows) => 
+				try{
+					db.prepare("UPDATE Members SET netid=? WHERE id= ?").all({}, req.body.new_netid, req.body.id);
+				}
+				catch(e)
 				{
-					if(err)
-					{
-						res.setHeader("Content-Type", "text/json");
-						res.writeHead(400);
-						res.end('{"error": "netid already in use"}');
-					}
+					res.setHeader("Content-Type", "text/json");
+					res.writeHead(400);
+					res.end('{"error": "netid already in use"}');
+					db.close();
+					return;
+				}
 
-					else
-					{
-						res.setHeader("Content-Type", "text/json");
-						res.writeHead(200);
-						res.end('{}');
-					}
-				});
+				res.setHeader("Content-Type", "text/json");
+				res.writeHead(200);
+				res.end('{}');
+				
 			}
 
 			db.close();
@@ -91,21 +87,12 @@ exports.run = function(req, res)
 		if(req.body.delete !== undefined)
 		{
 			let db = new sqlite3.Database('./db/pepband.db');
-			db.all("DELETE FROM Event_Attendance WHERE member_id=?", [req.body.id], (err, rows) => 
-			{
-				if(err) throw err;
-
-				db.all("DELETE FROM Members WHERE id=?", [req.body.id], (err,rows) => {
-
-					if (err) throw err;
-
-					res.setHeader("Content-Type", "text/json");
-					res.writeHead(200);
-					res.end();
-
-				});
-			});
-
+			db.prepare("DELETE FROM Event_Attendance WHERE member_id=?").all({}, req.body.id)
+			
+			db.prepare("DELETE FROM Members WHERE id=?").all({}, req.body.id)
+			res.setHeader("Content-Type", "text/json");
+			res.writeHead(200);
+			res.end();
 			db.close();
 
 			return;
@@ -147,14 +134,12 @@ exports.run = function(req, res)
 			req.body.id
 		];
 	
-		db.all(sql, params, (err, rows) => 
-		{
-			if(err) throw err;
-
-			res.setHeader("Content-Type", "text/json");
-			res.writeHead(200);
-			res.end();
-		});
+		db.prepare(sql).all({}, ...params)
+		
+		
+		res.setHeader("Content-Type", "text/json");
+		res.writeHead(200);
+		res.end();
 
 		// close the database connection*/
 		db.close();

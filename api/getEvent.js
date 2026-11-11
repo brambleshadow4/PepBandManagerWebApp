@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');
@@ -12,43 +12,40 @@ exports.run = function(req, res)
 		return;
 	}
 
-	db.all("SELECT * FROM Events WHERE id = ?", [Number(req.query.id)], (err, rows) => 
+	try 
 	{
-		if (err) 
-			throw err;
-
+		let rows = db.prepare("SELECT * FROM Events WHERE id = ?").all({}, Number(req.query.id))
+		
 		if(rows.length > 0)
 		{
 			data = rows[0];
 
-			db.all("SELECT * FROM Event_Attendance WHERE event_id = ?", [Number(req.query.id)], (err, rows) => 
-			{
-				if (err) 
-					throw err;
-
-				data.attendees = {};
-
-				rows.forEach((row) => {
+			let rows2 = db.prepare("SELECT * FROM Event_Attendance WHERE event_id = ?").all({}, Number(req.query.id)); 
 			
-					if(row.status == undefined || row.status == null)
-						row.status = 2;
 
-					data.attendees[row.member_id] = row;
-				});
+			data.attendees = {};
 
-				res.setHeader("Content-Type", "text/json");
-				res.writeHead(200);
-				res.end(JSON.stringify(data, undefined, 4));
+			rows2.forEach((row) => {
+		
+				if(row.status == undefined || row.status == null)
+					row.status = 2;
+
+				data.attendees[row.member_id] = row;
 			});
 
-		}
-		else
-		{
 			res.setHeader("Content-Type", "text/json");
-			res.writeHead(404);
-			res.end("{}");
+			res.writeHead(200);
+			res.end(JSON.stringify(data, undefined, 4));
 		}
-	});
+	}
+	catch(e)
+	{
+		console.error(e);
+		res.setHeader("Content-Type", "text/json");
+		res.writeHead(404);
+		res.end("{}");
+	}
+
 
 	// close the database connection
 	db.close();

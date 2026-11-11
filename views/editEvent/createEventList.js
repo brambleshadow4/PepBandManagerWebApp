@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite')
 exports.run = async function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');
@@ -8,17 +8,8 @@ exports.run = async function(req, res)
 	{
 		return new Promise(function(success, fail)
 		{
-			db.all(sql, args, (err, rows) => 
-			{
-
-				if(err)
-				{
-					db.close()
-					fail(err);
-				}
-				success(rows);
-			})
-
+			let rows = db.prepare(sql).all({}, ...args);
+			success(rows);
 		});
 	}
 

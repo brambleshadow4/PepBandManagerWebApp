@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');
@@ -11,19 +11,16 @@ exports.run = function(req, res)
 		res.send("Must specify season as a URL parameter, e.g. getEvents.php?season=42");
 	}
 
-	db.all("SELECT * FROM Events WHERE season_id = ? ORDER BY date", [Number(req.query.season)], (err, rows) => 
-	{
-		if (err) 
-			throw err;
+	let rows = db.prepare("SELECT * FROM Events WHERE season_id = ? ORDER BY date").all({} ,Number(req.query.season));
+	
 
-		rows.forEach((row) => {
-			events.push(row);
-		});
-
-		res.setHeader("Content-Type", "text/json");
-		res.writeHead(200);
-		res.end(JSON.stringify(events, undefined, 4));
+	rows.forEach((row) => {
+		events.push(row);
 	});
+
+	res.setHeader("Content-Type", "text/json");
+	res.writeHead(200);
+	res.end(JSON.stringify(events, undefined, 4));
 
 	// close the database connection
 	db.close();

@@ -1,4 +1,4 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('node:sqlite');
 exports.run = function(req, res) 
 {
 	let db = new sqlite3.Database('./db/pepband.db');
@@ -38,23 +38,18 @@ exports.run = function(req, res)
 	)
 	ORDER BY points DESC, m.instrument_id ASC`;
 
-	db.all(sql, [season, season], (err, rows) => 
-	{
-		if (err) 
-		{
-			throw err;
-		}
+	let rows = db.prepare(sql).all({}, season, season)
 
-		var members = [];
 
-		rows.forEach((row) => {
-			members.push(row);
-		});
+	var members = [];
 
-		res.setHeader("Content-Type", "text/json");
-		res.writeHead(200);
-		res.end(JSON.stringify(members, undefined, 4));
+	rows.forEach((row) => {
+		members.push(row);
 	});
+
+	res.setHeader("Content-Type", "text/json");
+	res.writeHead(200);
+	res.end(JSON.stringify(members, undefined, 4));
 	db.close();
 };
 
