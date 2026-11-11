@@ -1,10 +1,9 @@
 const sqlite3 = require('node:sqlite');
-
 const {v4: uuidv4} = require('uuid');
-
 const {OAuth2Client} = require('google-auth-library');
 const CLIENT_ID = "428252312756-djr3h6is5c0s8lfr5ev3pr1567rnnjat.apps.googleusercontent.com";
 const client = new OAuth2Client(CLIENT_ID);
+let fs = require("fs");
 
 exports.run = async function(req, res) 
 {
@@ -27,6 +26,40 @@ exports.run = async function(req, res)
 		req.session.role = data.role;
 		req.session.member_id = data.member_id;
 
+	}
+	else if (req.settings.SIMPLE_AUTH_PASSWORD)
+	{
+		var settings = {}
+		var settingsRaw = fs.readFileSync("server/settings.txt");
+		var settingsList = settingsRaw.toString().split(/\r?\n/g);
+
+		for (var line of settingsList)
+		{
+			var eq = line.indexOf('=');
+			if(eq != -1)
+			{	
+				var key = line.substring(0,eq);
+				settings[key] = line.substring(eq+1);
+
+				if(settings[key] === "true")
+					settings[key] = true;
+				if(settings[key] === "false")
+					settings[key] = false;
+			}
+		}
+
+		if(req.body.password == settings.SIMPLE_AUTH_PASSWORD)
+		{
+			req.session.netID = "";
+			req.session.role = 1;
+			req.session.member_id = -1;
+		}
+		else
+		{
+			req.session.netID = "";
+			req.session.role = -1;
+			req.session.member_id = -1;
+		}
 	}
 	else if(req.settings.NO_AUTH)
 	{

@@ -180,6 +180,10 @@ app.get('/assets/{*any}', function (req, res) {
 		{
 			res.sendFile('/views/landing/landing.html', {root:"./"});
 		}
+		if(settings.SIMPLE_AUTH_PASSWORD)
+		{
+			res.sendFile('/views/landing/landingSimpleAuth.html', {root:"./"});
+		}
 		else if(settings.NO_AUTH)
 		{
 			res.sendFile("/views/landing/landingNoAuth.html", {root:"./"});
