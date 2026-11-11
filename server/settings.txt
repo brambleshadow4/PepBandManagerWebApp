@@ -1,0 +1,7 @@
+HTTPS=false
+NO_AUTH=true
+#CERT=.\server\localkey\server.cert
+#KEY=.\server\localkey\server.key
+PASSPHRASE=your_secret_passphrase
+COOKIE_SECRET=some_stuff_here
+PORT=8000
