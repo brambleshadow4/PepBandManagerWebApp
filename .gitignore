@@ -1,8 +1,6 @@
-migration/*import.sql
-migration/*.xml
-migration/*.pickle
-node/server/*.key
-node/db/*.db
-node/server/*.cert
-node/server/settings.txt
-node/node_modules/**
+server/*.key
+db/*.db
+server/*.cert
+server/settings.txt
+node_modules/**
+

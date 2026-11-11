@@ -1,8 +1,0 @@
-HTTPS=false
-NO_AUTH=false
-SIMPLE_AUTH_PASSWORD=fish
-#CERT=.\server\localkey\server.cert
-#KEY=.\server\localkey\server.key
-PASSPHRASE=your_secret_passphrase
-COOKIE_SECRET=some_stuff_here
-PORT=8000
